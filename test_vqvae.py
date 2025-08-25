@@ -115,6 +115,10 @@ def test_vqvae(args):
             # Forward pass
             recon_data, loss_commit = vqvae(batch)
             
+            """
+            viz_skel_seq_anim({'recon':recon_data[0], 'gt':batch[0]},fs=0.5,subplot_layout=(1,2),if_print=1,file_folder='.',lim3d=0.5)
+            """
+
             # Ensure batch and recon_data have same length for loss calculation
             min_len = min(batch.shape[1], recon_data.shape[1])
             

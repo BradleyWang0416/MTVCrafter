@@ -373,8 +373,8 @@ class SMPL_VQVAE(nn.Module):
             remaining_frames = num_frames % frame_batch_size
             start_frame = frame_batch_size * i + (0 if i == 0 else remaining_frames)
             end_frame = frame_batch_size * (i + 1) + remaining_frames
-            x_intermediate = x[:, :, start_frame:end_frame]
-            x_intermediate = encdec(x_intermediate)
+            x_intermediate = x[:, :, start_frame:end_frame] # [B,3,8,17]
+            x_intermediate = encdec(x_intermediate) # Enc:[B,3072,3,17]
             x_output.append(x_intermediate)
         if encdec == self.encoder and self.vq is not None and not self.vq.is_train:
             x_output, loss = self.vq(torch.cat(x_output, dim=2), return_vq=return_vq)
@@ -386,7 +386,7 @@ class SMPL_VQVAE(nn.Module):
             return torch.cat(x_output, dim=2), None, None
     
     def forward(self, x, return_vq=False):
-        x = x.permute(0, 3, 1, 2)   
+        x = x.permute(0, 3, 1, 2)   # [B,49,17,3] -> [B,3,49,17]
         if not self.vq.is_train:
             x, loss = self.encdec_slice_frames(x, frame_batch_size=8, encdec=self.encoder, return_vq=return_vq)
         else:
