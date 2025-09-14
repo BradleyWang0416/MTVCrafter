@@ -22,33 +22,44 @@ def sample_video(video, indexes, method=2):
 
 
 class SkeletonDataset(torch.utils.data.Dataset):
-    def __init__(self, num_frames=25, load_data_file="", data_mode="joint2d", designated_split='train'):
+    def __init__(self, num_frames=25, sample_stride=1, load_data_file="", data_mode="joint2d", designated_split='train'):
         self.num_frames = num_frames
-
         assert load_data_file != ""
-        datareader_config_unsplit = {
-            'dt_file': load_data_file,
-        }
-        datareader_config_split = {
-            'chunk_len': num_frames,
-            'sample_stride': 1, 
-            'data_stride': num_frames,
-            'read_confidence': False,
-        }
-        datareader_config = {}
-        datareader_config.update({'read_modality': ['joint2d', 'joint3d']})
-        datareader_config.update(**datareader_config_unsplit, **datareader_config_split)
-        datareader = DataReaderMesh(**datareader_config)        
-        unsplit_data = DataReaderMesh.load_dataset_static(**datareader_config_unsplit)   # '/data2/wxs/DATASETS/AMASS_ByBradley'
-        datareader.dt_dataset = unsplit_data
 
-        read_func = datareader.read_2d if data_mode == "joint2d" else datareader.read_3d_image
-        self.all_data = read_func(designated_split=designated_split)
-        self.total_frames = self.all_data.shape[0]
-        self.split_id = datareader.get_split_id(designated_split=designated_split)
+        self.channel_dim = 2 if data_mode == "joint2d" else 3
 
-        self.global_mean, self.global_std = self.calculate_global_mean_std()
-        self.global_min, self.global_max = self.calculate_global_min_max()
+        data_dict = {}
+        data_list = []
+        for dt_file in load_data_file.split(','):
+            datareader_config_unsplit = {
+                'dt_file': dt_file,
+            }
+            datareader_config_split = {
+                'chunk_len': num_frames,
+                'sample_stride': sample_stride, 
+                'data_stride': num_frames,
+                'read_confidence': False,
+            }
+            datareader_config = {}
+            datareader_config.update({'read_modality': ['joint2d', 'joint3d']})
+            datareader_config.update(**datareader_config_unsplit, **datareader_config_split)
+            datareader = DataReaderMesh(**datareader_config)        
+            unsplit_data = DataReaderMesh.load_dataset_static(**datareader_config_unsplit)   # '/data2/wxs/DATASETS/AMASS_ByBradley'
+            datareader.dt_dataset = unsplit_data
+
+            read_func = datareader.read_2d if data_mode == "joint2d" else datareader.read_3d_image
+            data_dict[dt_file] = read_func(designated_split=designated_split)[..., :self.channel_dim]     # (N,17,3)
+
+            split_id = datareader.get_split_id(designated_split=designated_split)
+            data_list.extend(zip([dt_file]*len(split_id), split_id))
+
+        self.data_dict = data_dict
+        self.data_list = data_list
+
+        self.total_frames = sum(v.shape[0] for v in data_dict.values())
+
+        # self.global_mean, self.global_std = self.calculate_global_mean_std()
+        # self.global_min, self.global_max = self.calculate_global_min_max()
 
     def calculate_global_mean_std(self):
         mean = np.mean(self.all_data, axis=0)  # shape: [24, 3]
@@ -61,12 +72,12 @@ class SkeletonDataset(torch.utils.data.Dataset):
         return min, max
 
     def __len__(self):
-        return len(self.split_id)
+        return len(self.data_list)
 
     # use for 4DMoT training
     def __getitem__(self, idx):
-        slice_id = self.split_id[idx]
-        poses = self.all_data[slice_id]
+        dt_file, slice_id = self.data_list[idx]
+        poses = self.data_dict[dt_file][slice_id]   # (T,17,3)
 
         # norm_poses_4 = torch.tensor((poses - self.global_mean) / self.global_std)
         poses = torch.from_numpy(poses).float()

@@ -48,6 +48,7 @@ def get_args():
     # BY BRADLEY
     parser.add_argument('--data_mode', type=str, default="")
     parser.add_argument('--not_find_unused_parameters', action='store_true')
+    parser.add_argument('--sample_stride', type=int, default=1)
 
     return parser.parse_args()
 
@@ -226,7 +227,7 @@ if __name__ == '__main__':
     # BY BRADLEY ST ####################################
     if args.data_mode:
         assert args.load_data_file != ""
-        dataset = SkeletonDataset(num_frames=args.num_frames, load_data_file=args.load_data_file, data_mode=args.data_mode)
+        dataset = SkeletonDataset(num_frames=args.num_frames, sample_stride=args.sample_stride, load_data_file=args.load_data_file, data_mode=args.data_mode)
     else:
     # BY BRADLEY ED ####################################
         if args.load_data_file != "":
@@ -256,9 +257,9 @@ if __name__ == '__main__':
         logger.info('Data loaded with {} samples and {} frames'.format(len(dataset), dataset.total_frames))
 
     # prepare model
-    encoder = Encoder(in_channels=3, mid_channels=[128, 512], out_channels=args.codebook_dim, downsample_time=[2, 2], downsample_joint=[1, 1])
+    encoder = Encoder(in_channels=dataset.channel_dim, mid_channels=[128, 512], out_channels=args.codebook_dim, downsample_time=[2, 2], downsample_joint=[1, 1])
     vq = VectorQuantizer(nb_code=args.nb_code, code_dim=args.codebook_dim)
-    decoder = Decoder(in_channels=args.codebook_dim, mid_channels=[512, 128], out_channels=3, upsample_rate=2.0, frame_upsample_rate=[2.0, 2.0], joint_upsample_rate=[1.0, 1.0])
+    decoder = Decoder(in_channels=args.codebook_dim, mid_channels=[512, 128], out_channels=dataset.channel_dim, upsample_rate=2.0, frame_upsample_rate=[2.0, 2.0], joint_upsample_rate=[1.0, 1.0])
     vqvae = SMPL_VQVAE(encoder, decoder, vq).train()
 
     # prepare optimizer and scheduler

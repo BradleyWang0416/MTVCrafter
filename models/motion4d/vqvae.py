@@ -169,7 +169,7 @@ class VectorQuantizer(nn.Module):
         if self.is_train:
             return x_d, commit_loss, perplexity
         else:
-            return x_d, commit_loss
+            return x_d, commit_loss, code_idx.view(bs, f, j)
 
 
 
@@ -377,8 +377,8 @@ class SMPL_VQVAE(nn.Module):
             x_intermediate = encdec(x_intermediate) # Enc:[B,3072,3,17]
             x_output.append(x_intermediate)
         if encdec == self.encoder and self.vq is not None and not self.vq.is_train:
-            x_output, loss = self.vq(torch.cat(x_output, dim=2), return_vq=return_vq)
-            return x_output, loss
+            x_output, loss, indices = self.vq(torch.cat(x_output, dim=2), return_vq=return_vq)
+            return x_output, loss, indices
         elif encdec == self.encoder and self.vq is not None and self.vq.is_train:
             x_output, loss, preplexity = self.vq(torch.cat(x_output, dim=2))
             return x_output, loss, preplexity
@@ -387,8 +387,9 @@ class SMPL_VQVAE(nn.Module):
     
     def forward(self, x, return_vq=False):
         x = x.permute(0, 3, 1, 2)   # [B,49,17,3] -> [B,3,49,17]
+        indices = None
         if not self.vq.is_train:
-            x, loss = self.encdec_slice_frames(x, frame_batch_size=8, encdec=self.encoder, return_vq=return_vq)
+            x, loss, indices = self.encdec_slice_frames(x, frame_batch_size=8, encdec=self.encoder, return_vq=return_vq)
         else:
             x, loss, perplexity = self.encdec_slice_frames(x, frame_batch_size=8, encdec=self.encoder, return_vq=return_vq)
         if return_vq:
@@ -397,4 +398,4 @@ class SMPL_VQVAE(nn.Module):
         x = x.permute(0, 2, 3, 1)
         if self.vq.is_train:
             return x, loss, perplexity
-        return x, loss
+        return x, loss, indices
