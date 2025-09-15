@@ -3,8 +3,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
-from typing import Any, Dict, Optional, Tuple, Union
-from diffusers.models.attention import Attention
+# from typing import Any, Dict, Optional, Tuple, Union
+# from diffusers.models.attention import Attention
 
 
 class Encoder(nn.Module):

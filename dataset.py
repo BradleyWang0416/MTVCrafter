@@ -2,7 +2,7 @@ import os
 import gc
 import copy
 import torch
-import decord
+# import decord
 import pickle
 import random
 import numpy as np

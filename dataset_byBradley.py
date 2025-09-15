@@ -43,7 +43,7 @@ class SkeletonDataset(torch.utils.data.Dataset):
             datareader_config = {}
             datareader_config.update({'read_modality': ['joint2d', 'joint3d']})
             datareader_config.update(**datareader_config_unsplit, **datareader_config_split)
-            datareader = DataReaderMesh(**datareader_config)        
+            datareader = DataReaderMesh(**datareader_config)
             unsplit_data = DataReaderMesh.load_dataset_static(**datareader_config_unsplit)   # '/data2/wxs/DATASETS/AMASS_ByBradley'
             datareader.dt_dataset = unsplit_data
 

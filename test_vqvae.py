@@ -36,6 +36,9 @@ def get_args():
     # Environment
     parser.add_argument('--device', type=str, default='cuda' if torch.cuda.is_available() else 'cpu', help="Device to run the test on.")
 
+    parser.add_argument('--sample_stride', type=int, default=1)
+    parser.add_argument('--loss_type', type=str, default='l1')
+
     return parser.parse_args()
 
 def test_vqvae(args):
@@ -91,7 +94,7 @@ def test_vqvae(args):
     # Note: We assume SkeletonDataset can be modified or used to load a 'test' split.
     # Here, we load the 'train' split as a placeholder for testing purposes.
     # For a real test set, you might need to adjust SkeletonDataset.
-    dataset = SkeletonDataset(num_frames=args.num_frames, load_data_file=args.load_data_file, data_mode=args.data_mode, designated_split='test')
+    dataset = SkeletonDataset(num_frames=args.num_frames, sample_stride=args.sample_stride, load_data_file=args.load_data_file, data_mode=args.data_mode, designated_split='test')
     dataloader = torch.utils.data.DataLoader(
         dataset,
         batch_size=args.batch_size,
@@ -102,7 +105,15 @@ def test_vqvae(args):
 
     # --- 3. Run Inference and Evaluation ---
     total_l1_loss = 0.0
-    loss_fn = torch.nn.L1Loss()
+    
+
+    if args.loss_type == 'l1':
+        loss_fn = torch.nn.L1Loss()
+    elif args.loss_type == 'mpjpe':
+        def mpjpe_loss(pred, target):
+            return torch.mean(torch.norm(pred - target, dim=-1))
+        loss_fn = mpjpe_loss
+
     vis_count = 0
     codebook_usage = torch.zeros(args.nb_code, dtype=torch.long, device='cpu')
 
@@ -160,9 +171,6 @@ def test_vqvae(args):
                     if vis_count >= args.num_vis_samples:
                         break
 
-    avg_l1_loss = total_l1_loss / len(dataloader)
-    print(f"\n--- Test Results ---")
-    print(f"Average L1 Reconstruction Loss: {avg_l1_loss:.6f}")
 
     # --- 5. Analyze Codebook Usage ---
     print("\n--- Codebook Usage Statistics ---")
@@ -198,6 +206,16 @@ def test_vqvae(args):
             for i in range(bottom_k):
                 print(f"  - Code {original_indices[i].item()}: used {bottom_counts[i].item()} times")
 
+
+
+
+    avg_l1_loss = total_l1_loss / len(dataloader)
+    print(f"\n--- Test Results ---")
+    print(f"Average {args.loss_type} Reconstruction Loss: {avg_l1_loss:.6f}")
+
+
+
+    
     if args.num_vis_samples > 0:
         print(f"\nVisualizations saved in: {args.output_dir}")
 

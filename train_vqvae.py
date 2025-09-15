@@ -50,6 +50,8 @@ def get_args():
     parser.add_argument('--not_find_unused_parameters', action='store_true')
     parser.add_argument('--sample_stride', type=int, default=1)
 
+    parser.add_argument('--loss_type', type=str, default='l1')
+
     return parser.parse_args()
 
 
@@ -62,6 +64,7 @@ def update_lr_warm_up(optimizer, nb_iter, warm_up_iter, lr):
 
 
 def train_vqvae(
+    args,
     accelerator, 
     logger, 
     vqvae, 
@@ -107,7 +110,18 @@ def train_vqvae(
 
 
             recon_data, loss_commit, perplexity = vqvae(batch)
-            reconstruction_loss = nn.L1Loss()(recon_data, batch)
+            # [B,T,17,3]
+
+
+            if args.loss_type == 'l1':
+                loss_fn = nn.L1Loss()
+            elif args.loss_type == 'mpjpe':
+                def mpjpe_loss(pred, target):
+                    return torch.mean(torch.norm(pred - target, dim=-1))
+                loss_fn = mpjpe_loss
+
+
+            reconstruction_loss = loss_fn(recon_data, batch)
             loss = reconstruction_loss + commit_ratio * loss_commit
             recon_loss += reconstruction_loss.item()
             commit_loss += loss_commit.item()
@@ -293,6 +307,7 @@ if __name__ == '__main__':
         logger.info(f'Number of trainable parameters: {n/1e6:.6f} M')
 
     train_vqvae(
+        args,
         accelerator, 
         logger, 
         vqvae, 

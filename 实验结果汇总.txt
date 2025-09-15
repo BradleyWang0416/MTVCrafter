@@ -1,0 +1,18 @@
+vqvae_experiment/h36m_j3d_f16s1_cb2048x1024
+
+    Codebook size: 2048
+    Number of activated codes: 1200 (58.59%)
+    Average l1 Reconstruction Loss: 0.002987
+    Average mpjpe Reconstruction Loss: 0.006175
+
+vqvae_experiment/h36m_j3d_f16s1_cb4096x2048
+    Codebook size: 4096
+    Number of activated codes: 2397 (58.52%)
+    Average L1 Reconstruction Loss: 0.002252
+    Average mpjpe Reconstruction Loss: 0.004565
+
+vqvae_experiment/h36m_j3d_f64s1_cb4096x2048
+    Codebook size: 4096
+    Number of activated codes: 1605 (39.18%)
+    Average l1 Reconstruction Loss: 0.002910
+    Average mpjpe Reconstruction Loss: 0.005912
