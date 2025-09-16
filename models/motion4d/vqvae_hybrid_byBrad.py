@@ -63,7 +63,7 @@ class HYBRID_VQVAE(nn.Module):
         self.num_vision_channels = sum(num_channels_list)
 
         self.vision_guidance_ratio = vision_config.model.hybrid.vision_guidance_ratio
-        assert self.vision_guidance_ratio > 0, "vision_guidance_ratio should be > 0. Use base VQVAE instead of hybrid VQVAE if no vision guidance is needed."
+        # assert self.vision_guidance_ratio > 0, "vision_guidance_ratio should be > 0. Use base VQVAE instead of hybrid VQVAE if no vision guidance is needed."
         code_dim_vision = int(vq.code_dim * self.vision_guidance_ratio)
         code_dim_skel = vq.code_dim - code_dim_vision
 
@@ -72,20 +72,22 @@ class HYBRID_VQVAE(nn.Module):
         self.decoder = Decoder(**decoder)
         self.vq = VectorQuantizer(**vq)
 
-        self.vision_backbone = pose_hrnet.get_pose_net(vision_config.model.backbone)
-        self.vision_encoder = VisionEncoder(
-            mid_channels=[self.num_vision_channels, 512],
-            out_channels=code_dim_vision,
-            downsample_time=[2, 2],
-            downsample_joint=[1, 1],
-        )
+        if self.vision_guidance_ratio > 0:
+            self.vision_backbone = pose_hrnet.get_pose_net(vision_config.model.backbone)
+            self.vision_encoder = VisionEncoder(
+                mid_channels=[self.num_vision_channels, 512],
+                out_channels=code_dim_vision,
+                downsample_time=[2, 2],
+                downsample_joint=[1, 1],
+            )
     
     def to(self, device):
         self.encoder = self.encoder.to(device)
         self.decoder = self.decoder.to(device)
         self.vq = self.vq.to(device)
-        self.vision_backbone = self.vision_backbone.to(device)
-        self.vision_encoder = self.vision_encoder.to(device)
+        if self.vision_guidance_ratio > 0:
+            self.vision_backbone = self.vision_backbone.to(device)
+            self.vision_encoder = self.vision_encoder.to(device)
         self.device = device
         return self
         
@@ -95,35 +97,36 @@ class HYBRID_VQVAE(nn.Module):
         joint3d_video = batch_dict.joint3d_image_affined_normed     # [B,T,17,3]
         B, T = joint3d_video.shape[:2]
 
+        if self.vision_guidance_ratio > 0:
+            video_rgb = batch_dict.video_rgb    # [B,T,H,W,3]
+            video_rgb = video_rgb.permute(0, 1, 4, 2, 3).contiguous()  # [B,T,3,H,W]
+            images = video_rgb.reshape(-1, *video_rgb.shape[2:])  # [B*T,3,H,W]
+            
+            image_feature_list = self.vision_backbone(images)
+            # [[BT,32,64,48], [BT,64,32,24], [BT,128,16,12], [BT,256,8,6]]
+            if isinstance(self.hrnet_output_level, int):
+                image_feature_list = [image_feature_list[self.hrnet_output_level]]
+            elif isinstance(self.hrnet_output_level, list):
+                image_feature_list = [image_feature_list[i] for i in self.hrnet_output_level]
 
-        video_rgb = batch_dict.video_rgb    # [B,T,H,W,3]
-        video_rgb = video_rgb.permute(0, 1, 4, 2, 3).contiguous()  # [B,T,3,H,W]
-        images = video_rgb.reshape(-1, *video_rgb.shape[2:])  # [B*T,3,H,W]
-        
-        image_feature_list = self.vision_backbone(images)
-        # [[BT,32,64,48], [BT,64,32,24], [BT,128,16,12], [BT,256,8,6]]
-        if isinstance(self.hrnet_output_level, int):
-            image_feature_list = [image_feature_list[self.hrnet_output_level]]
-        elif isinstance(self.hrnet_output_level, list):
-            image_feature_list = [image_feature_list[i] for i in self.hrnet_output_level]
+            joint3d_images = joint3d_video.reshape(-1, *joint3d_video.shape[2:])    # [B*T,17,3]
+            grid_sample_ref = joint3d_images[..., :2].unsqueeze(-2)  # [B*T,17,1,2]
 
-        joint3d_images = joint3d_video.reshape(-1, *joint3d_video.shape[2:])    # [B*T,17,3]
-        grid_sample_ref = joint3d_images[..., :2].unsqueeze(-2)  # [B*T,17,1,2]
+            features_ref_list = []
+            for features in image_feature_list:
+                features_ref = F.grid_sample(features, grid_sample_ref, align_corners=True)
+                # features: [BT,256,8,6]; grid_sample_ref: [BT,17,1,2] >>> features_ref: [BT,256,17,1]
+                # TODO: 如果 grid_sample_ref 的倒数第二维不是1, 而是3 (比如人体关节的特征不是一个点, 而是一个小区域), 会怎么样?
+                features_ref = features_ref.squeeze(-1).permute(0, 2, 1).contiguous()   # [BT,17,256]
+                features_ref_list.append(features_ref)
+            # features_ref_list: [[BT,17,32], [BT,17,64], [BT,17,128], [BT,17,256]]
+            video_ref_features = torch.cat(features_ref_list, dim=-1)  # [BT,17,32+64+128+256=480]
+            video_ref_features = video_ref_features.reshape(B, T, *video_ref_features.shape[1:])  # [B,T,17,480]
 
-        features_ref_list = []
-        for features in image_feature_list:
-            features_ref = F.grid_sample(features, grid_sample_ref, align_corners=True)
-            # features: [BT,256,8,6]; grid_sample_ref: [BT,17,1,2] >>> features_ref: [BT,256,17,1]
-            # TODO: 如果 grid_sample_ref 的倒数第二维不是1, 而是3 (比如人体关节的特征不是一个点, 而是一个小区域), 会怎么样?
-            features_ref = features_ref.squeeze(-1).permute(0, 2, 1).contiguous()   # [BT,17,256]
-            features_ref_list.append(features_ref)
-        # features_ref_list: [[BT,17,32], [BT,17,64], [BT,17,128], [BT,17,256]]
-        video_ref_features = torch.cat(features_ref_list, dim=-1)  # [BT,17,32+64+128+256=480]
-        video_ref_features = video_ref_features.reshape(B, T, *video_ref_features.shape[1:])  # [B,T,17,480]
-        
+            vision_feats = video_ref_features.permute(0, 3, 1, 2).contiguous()  # [B,480,T,17]
+        else:
+            vision_feats = None
 
-
-        vision_feats = video_ref_features.permute(0, 3, 1, 2).contiguous()  # [B,480,T,17]
         joint_feats = joint3d_video.permute(0, 3, 1, 2)   # [B,49,17,3] -> [B,3,49,17]
         indices = None
         if not self.vq.is_train:
@@ -153,7 +156,7 @@ class HYBRID_VQVAE(nn.Module):
             joint_feats_intermediate = joint_feats[:, :, start_frame:end_frame] # [B,3,8,17]
             joint_feats_intermediate = encdec(joint_feats_intermediate) # Enc:[B,3072,3,17]
 
-            if encdec == self.encoder:
+            if encdec == self.encoder and vision_feats is not None:
                 vision_feats_intermediate = vision_feats[:, :, start_frame:end_frame] # [B,480,8,17]
                 vision_encoded = self.vision_encoder(vision_feats_intermediate) # [B,code_dim_vision,2,17]
                 joint_feats_intermediate = torch.cat([joint_feats_intermediate, vision_encoded], dim=1) # [B,code_dim,2,17]

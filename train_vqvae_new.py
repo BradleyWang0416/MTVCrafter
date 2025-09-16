@@ -353,26 +353,26 @@ if __name__ == '__main__':
     vqvae_config.vq.code_dim = args.codebook_dim
     vqvae_config.decoder.in_channels = args.codebook_dim
 
-    if args.vqvae_type == 'base':
-        encoder = Encoder(**vqvae_config.encoder)
-        vq = VectorQuantizer(**vqvae_config.vq)
-        decoder = Decoder(**vqvae_config.decoder)
-        vqvae = SMPL_VQVAE(encoder, decoder, vq).train()
-    elif args.vqvae_type == 'hybrid':
-        if args.get('hrnet_output_level', None) is not None:
-            vision_config.model.hybrid.hrnet_output_level = args.hrnet_output_level
-        if args.get('vision_guidance_ratio', None) is not None:
-            vision_config.model.hybrid.vision_guidance_ratio = args.vision_guidance_ratio
+    # if args.vqvae_type == 'base':
+    #     encoder = Encoder(**vqvae_config.encoder)
+    #     vq = VectorQuantizer(**vqvae_config.vq)
+    #     decoder = Decoder(**vqvae_config.decoder)
+    #     vqvae = SMPL_VQVAE(encoder, decoder, vq).train()
+    # elif args.vqvae_type == 'hybrid':
+    if args.get('hrnet_output_level', None) is not None:
+        vision_config.model.hybrid.hrnet_output_level = args.hrnet_output_level
+    if args.get('vision_guidance_ratio', None) is not None:
+        vision_config.model.hybrid.vision_guidance_ratio = args.vision_guidance_ratio
 
-        vqvae = HYBRID_VQVAE(vqvae_config.encoder, vqvae_config.decoder, vqvae_config.vq, vision_config=vision_config).train()
+    vqvae = HYBRID_VQVAE(vqvae_config.encoder, vqvae_config.decoder, vqvae_config.vq, vision_config=vision_config).train()
 
-        if args.get('fix_weights', None) is not None:
-            vision_config.model.backbone.fix_weights = args.fix_weights
-        if vision_config.model.backbone.fix_weights:
-            print("vision backbone weights are fixed")
-            for p in vqvae.vision_backbone.parameters():
-                p.requires_grad = False
-            vqvae.vision_backbone.eval()
+    if args.get('fix_weights', None) is not None:
+        vision_config.model.backbone.fix_weights = args.fix_weights
+    if vision_config.model.backbone.fix_weights:
+        print("vision backbone weights are fixed")
+        for p in vqvae.vision_backbone.parameters():
+            p.requires_grad = False
+        vqvae.vision_backbone.eval()
 
     # 统计可学习和不可学习参数量
     def count_parameters(model):
