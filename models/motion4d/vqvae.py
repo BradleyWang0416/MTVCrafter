@@ -30,17 +30,17 @@ class Encoder(nn.Module):
         self.conv_out = nn.Conv2d(mid_channels[-1], out_channels, kernel_size=3, stride=1, padding=1)
     
     def forward(self, x):
-        x = self.conv_in(x)
+        x = self.conv_in(x) # [B,3,8,17] -> [B,128,8,17]
         for resnet in self.resnet1:
-            x = resnet(x)
-        x = self.downsample1(x)
+            x = resnet(x)   # 不改变形状
+        x = self.downsample1(x) # [B,128,8,17] -> [B,128,4,17]
         
-        x = self.resnet2(x)
+        x = self.resnet2(x) # [B,128,4,17] -> [B,512,4,17]
         for resnet in self.resnet3:
-            x = resnet(x)
-        x = self.downsample2(x)
+            x = resnet(x)   # 不改变形状
+        x = self.downsample2(x) # [B,512,4,17] -> [B,512,2,17]
 
-        x = self.conv_out(x)
+        x = self.conv_out(x)    # [B,512,2,17] -> [B,out_channels,2,17]
 
         return x
 

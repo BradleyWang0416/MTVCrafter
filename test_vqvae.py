@@ -5,6 +5,9 @@ import numpy as np
 from tqdm import tqdm
 from PIL import Image
 from safetensors.torch import load_file as load_safetensors
+import yaml
+from easydict import EasyDict as edict
+import ast
 
 from models import SMPL_VQVAE, VectorQuantizer, Encoder, Decoder
 from dataset_byBradley import SkeletonDataset
@@ -13,16 +16,35 @@ from draw_pose import get_pose_images
 import sys
 sys.path.append("/home/wxs/Skeleton-in-Context-tpami/")
 from lib.utils.viz_skel_seq import viz_skel_seq_anim
+sys.path.append("/home/wxs/ContextAwarePoseFormer_Private/H36M-Toolbox/")
+from multimodal_h36m_dataset_byBradley import Multimodal_Mocap_Dataset
 
 print('\npython ' + ' '.join(sys.argv))
 
+def update_dict(v, cfg):
+    for kk, vv in v.items():
+        if kk in cfg:
+            if isinstance(vv, dict) and isinstance(cfg[kk], dict):
+                update_dict(vv, cfg[kk])
+            else:
+                if vv is not None:
+                    cfg[kk] = vv
+        else:
+            if vv is not None: 
+                cfg[kk] = vv
+
+
+def update_config(path, args):
+    with open(path) as fin: # path = 'experiments/human36m/human36m.yaml'
+        exp_config = edict(yaml.safe_load(fin))
+        update_dict(vars(args), exp_config)
+        return exp_config
+    
 def get_args():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--config", type=str, default='config/old_wo_img.yaml', help="Path to config file")
     # Model and Data
     parser.add_argument('--resume_pth', type=str, required=True, help="Path to the trained VQVAE model checkpoint.")
-    parser.add_argument('--load_data_file', type=str, required=True, help="Path to the dataset file (e.g., a .pkl or .joblib file).")
-    parser.add_argument('--data_mode', type=str, default="joint3d", choices=['joint2d', 'joint3d'], help="Specify the data mode for SkeletonDataset.")
-    parser.add_argument('--num_frames', type=int, default=49, help="Number of frames per sample.")
     parser.add_argument('--batch_size', type=int, default=16, help="Batch size for testing.")
     
     # Model Config (should match training)
@@ -36,10 +58,38 @@ def get_args():
     # Environment
     parser.add_argument('--device', type=str, default='cuda' if torch.cuda.is_available() else 'cpu', help="Device to run the test on.")
 
-    parser.add_argument('--sample_stride', type=int, default=1)
     parser.add_argument('--loss_type', type=str, default='l1')
 
-    return parser.parse_args()
+    # Also defined in yaml. 如果在命令行中指定，则覆盖yaml中的配置
+    parser.add_argument('--num_frames', type=int, default=None, help="Number of frames per sample.")
+    parser.add_argument('--sample_stride', type=int, default=None)
+    parser.add_argument('--data_stride', type=int, default=None)
+    parser.add_argument('--data_mode', type=str, default=None)
+
+    parser.add_argument('--load_data_file', type=str, default=None)
+    parser.add_argument('--load_image_source_file', type=str, default=None)
+    parser.add_argument('--load_bbox_file', type=str, default=None)
+    parser.add_argument('--load_text_source_file', type=str, default=None)
+    parser.add_argument('--return_extra', type=str, default=None)
+
+    parser.add_argument('--normalize', type=str, default=None)
+    parser.add_argument('--filter_invalid_images', type=bool, default=None)
+    parser.add_argument('--processed_image_shape', type=str, default=None)
+    parser.add_argument('--backbone', type=str, default=None)
+    parser.add_argument('--get_item_list', type=str, default=None)
+    
+    args = parser.parse_args()
+
+    if isinstance(args.return_extra, str):
+        args.return_extra = ast.literal_eval(args.return_extra)
+    if isinstance(args.processed_image_shape, str):
+        args.processed_image_shape = ast.literal_eval(args.processed_image_shape)
+    if isinstance(args.get_item_list, str):
+        args.get_item_list = ast.literal_eval(args.get_item_list)
+
+    config = update_config(args.config, args)
+
+    return config
 
 def test_vqvae(args):
     # Create output directory
@@ -94,12 +144,36 @@ def test_vqvae(args):
     # Note: We assume SkeletonDataset can be modified or used to load a 'test' split.
     # Here, we load the 'train' split as a placeholder for testing purposes.
     # For a real test set, you might need to adjust SkeletonDataset.
-    dataset = SkeletonDataset(num_frames=args.num_frames, sample_stride=args.sample_stride, load_data_file=args.load_data_file, data_mode=args.data_mode, designated_split='test')
+    # dataset = SkeletonDataset(num_frames=args.num_frames, sample_stride=args.sample_stride, load_data_file=args.load_data_file, data_mode=args.data_mode, designated_split='test')
+    # dataloader = torch.utils.data.DataLoader(
+    #     dataset,
+    #     batch_size=args.batch_size,
+    #     shuffle=False, # No need to shuffle for testing
+    #     drop_last=False
+    # )
+    dataset = Multimodal_Mocap_Dataset( num_frames=args.num_frames, sample_stride=args.sample_stride, data_stride=args.data_stride,
+                                        data_mode=args.data_mode,
+                                        designated_split='test',
+                                        load_data_file=args.load_data_file,
+                                        load_image_source_file=args.load_image_source_file,
+                                        load_bbox_file=args.load_bbox_file,
+                                        load_text_source_file=args.load_text_source_file,
+                                        return_extra=args.return_extra,
+                                        # data preprocessing config
+                                        normalize=args.normalize,  # isotropic (i.e., screen_coordinate_normalize), anisotropic
+                                        # image config
+                                        filter_invalid_images=args.filter_invalid_images,
+                                        processed_image_shape=args.processed_image_shape,    # e.g., (192,256)
+                                        backbone=args.backbone,
+                                        # dataloader config
+                                        get_item_list=args.get_item_list,
+                                        )
     dataloader = torch.utils.data.DataLoader(
         dataset,
         batch_size=args.batch_size,
         shuffle=False, # No need to shuffle for testing
-        drop_last=False
+        drop_last=False,
+        collate_fn=dataset.collate_fn
     )
     print(f"Dataset loaded with {len(dataset)} samples.")
 
@@ -215,9 +289,11 @@ def test_vqvae(args):
 
 
 
-    
+
     if args.num_vis_samples > 0:
         print(f"\nVisualizations saved in: {args.output_dir}")
+
+
 
 
 if __name__ == '__main__':

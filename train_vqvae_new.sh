@@ -1,17 +1,23 @@
-mode=debug
-# mode=train
+# mode=debug
+mode=train
 
 NUM_CODE=4096   # 8192
 CODE_DIM=2048   # 3072
-NUM_FRAME=64
+NUM_FRAME=16
 SAMPLE_STRIDE=1
+DATA_STRIDE=16
 
-LOSS_TYPE=l1     # l1, mpjpe
+LOSS_TYPE=mpjpe     # l1, mpjpe
+
+VQVAE_TYPE=base  # base, hybrid
 
 
-EXP_NAME=h36m_j3d_f64s1_cb4096x2048
+# RESUME_PATH=''
+RESUME_PATH=vqvae_experiment/h36m_j3d_f16s1_cb4096x2048_mpjpe/models/checkpoint_epoch_99_step_300000
+
+EXP_NAME=h36m_j3d_f16s1_cb4096x2048_mpjpe_
 DATA_MODE=joint3d
-LOG=h36m_j3d_f64s1_cb4096x2048.log
+LOG=h36m_j3d_f16s1_cb4096x2048_mpjpe_.log
 
 
 # D1="/data2/wxs/DATASETS/PW3D_ByBradley/all_data.pkl"
@@ -26,28 +32,34 @@ if [ "$mode" = "debug" ]; then
     CUDA_VISIBLE_DEVICES=5 \
         python \
         -m debugpy --listen 5680 --wait-for-client \
-        train_vqvae.py \
+        train_vqvae_new.py \
         --data_mode ${DATA_MODE} \
         --load_data_file ${DATA_PATH} \
         --num_frames ${NUM_FRAME} \
         --sample_stride ${SAMPLE_STRIDE} \
+        --data_stride ${DATA_STRIDE} \
         --project_dir vqvae_experiment/tmp \
         --not_find_unused_parameters \
         --nb_code ${NUM_CODE} \
         --codebook_dim ${CODE_DIM} \
-        --loss_type ${LOSS_TYPE}
+        --loss_type ${LOSS_TYPE} \
+        --vqvae_type ${VQVAE_TYPE} \
+        --resume_pth ${RESUME_PATH}
 else
-    CUDA_VISIBLE_DEVICES=5 \
+    CUDA_VISIBLE_DEVICES=7 \
         nohup \
-        python -u train_vqvae.py \
+        python -u train_vqvae_new.py \
         --data_mode ${DATA_MODE} \
         --load_data_file ${DATA_PATH} \
         --num_frames ${NUM_FRAME} \
         --sample_stride ${SAMPLE_STRIDE} \
+        --data_stride ${DATA_STRIDE} \
         --project_dir vqvae_experiment/${EXP_NAME} \
         --not_find_unused_parameters \
         --nb_code ${NUM_CODE} \
         --codebook_dim ${CODE_DIM} \
         --loss_type ${LOSS_TYPE} \
+        --vqvae_type ${VQVAE_TYPE} \
+        --resume_pth ${RESUME_PATH} \
         > ${LOG} &
 fi

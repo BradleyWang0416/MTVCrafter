@@ -1,3 +1,4 @@
+*.log
 test_output/
 vqvae_experiment/
 data/
