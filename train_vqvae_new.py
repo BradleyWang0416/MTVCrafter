@@ -79,6 +79,7 @@ def get_args():
     parser.add_argument('--loss_type', type=str, default='l1')
 
     parser.add_argument('--vqvae_type', type=str, default='base')
+    parser.add_argument('--joint_data_type', type=str, default='joint3d_image_affined_normed')
 
     # Also defined in yaml. 如果在命令行中指定，则覆盖yaml中的配置
     parser.add_argument('--num_frames', type=int, default=None, help="Number of frames per sample.")
@@ -364,15 +365,16 @@ if __name__ == '__main__':
     if args.get('vision_guidance_ratio', None) is not None:
         vision_config.model.hybrid.vision_guidance_ratio = args.vision_guidance_ratio
 
-    vqvae = HYBRID_VQVAE(vqvae_config.encoder, vqvae_config.decoder, vqvae_config.vq, vision_config=vision_config).train()
-
-    if args.get('fix_weights', None) is not None:
-        vision_config.model.backbone.fix_weights = args.fix_weights
-    if vision_config.model.backbone.fix_weights:
-        print("vision backbone weights are fixed")
-        for p in vqvae.vision_backbone.parameters():
-            p.requires_grad = False
-        vqvae.vision_backbone.eval()
+    vqvae = HYBRID_VQVAE(vqvae_config.encoder, vqvae_config.decoder, vqvae_config.vq, vision_config=vision_config, joint_data_type=args.joint_data_type).train()
+    
+    if vision_config.model.hybrid.vision_guidance_ratio > 0:
+        if args.get('fix_weights', None) is not None:
+            vision_config.model.backbone.fix_weights = args.fix_weights
+        if vision_config.model.backbone.fix_weights:
+            print("vision backbone weights are fixed")
+            for p in vqvae.vision_backbone.parameters():
+                p.requires_grad = False
+            vqvae.vision_backbone.eval()
 
     # 统计可学习和不可学习参数量
     def count_parameters(model):

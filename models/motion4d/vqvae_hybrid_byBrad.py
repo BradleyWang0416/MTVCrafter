@@ -8,6 +8,7 @@ from .vqvae import SMPL_VQVAE, ResBlock, Downsample, Encoder, Decoder, VectorQua
 import sys
 sys.path.append('/home/wxs/ContextAware-PoseFormer/ContextPose/mvn/models/')
 import pose_hrnet
+sys.path.remove('/home/wxs/ContextAware-PoseFormer/ContextPose/mvn/models/')
 
 class VisionEncoder(nn.Module):
     def __init__(
@@ -48,8 +49,10 @@ class VisionEncoder(nn.Module):
     
 
 class HYBRID_VQVAE(nn.Module):
-    def __init__(self, encoder, decoder, vq, vision_config):
+    def __init__(self, encoder, decoder, vq, vision_config, joint_data_type):
         super(HYBRID_VQVAE, self).__init__()
+
+        self.joint_data_type = joint_data_type
 
         ####################### adjust configs before creating modules #######################
         num_channels_list = vision_config.model.backbone.STAGE4.NUM_CHANNELS
@@ -68,6 +71,7 @@ class HYBRID_VQVAE(nn.Module):
         code_dim_skel = vq.code_dim - code_dim_vision
 
         encoder.out_channels = code_dim_skel
+        ####################### creating modules #######################
         self.encoder = Encoder(**encoder)
         self.decoder = Decoder(**decoder)
         self.vq = VectorQuantizer(**vq)
@@ -124,8 +128,8 @@ class HYBRID_VQVAE(nn.Module):
 
 
     def forward(self, batch_dict, return_vq=False):
-        joint_gt = batch_dict.joint3d_image_affined_normed.clone()
-        joint3d_video = batch_dict.joint3d_image_affined_normed     # [B,T,17,3]        
+        joint_gt = batch_dict[self.joint_data_type].clone()
+        joint3d_video = batch_dict[self.joint_data_type]     # [B,T,17,3]
 
         if self.vision_guidance_ratio > 0:
             video_rgb = batch_dict.video_rgb  # [B,T,H,W,3]
