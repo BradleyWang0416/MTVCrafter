@@ -104,6 +104,8 @@ def get_args():
     parser.add_argument('--fix_weights', action='store_true')
     parser.add_argument('--vision_guidance_ratio', type=float, default=None)
 
+    parser.add_argument('--downsample_time', type=str, default=None)
+    parser.add_argument('--frame_upsample_rate', type=str, default=None)
     args = parser.parse_args()
 
     if isinstance(args.return_extra, str):
@@ -114,6 +116,10 @@ def get_args():
         args.get_item_list = ast.literal_eval(args.get_item_list)
     if isinstance(args.hrnet_output_level, str):
         args.hrnet_output_level = ast.literal_eval(args.hrnet_output_level)
+    if isinstance(args.downsample_time, str):
+        args.downsample_time = ast.literal_eval(args.downsample_time)
+    if isinstance(args.frame_upsample_rate, str):
+        args.frame_upsample_rate = ast.literal_eval(args.frame_upsample_rate)
 
     config = update_config(args.config, args)
 
@@ -307,7 +313,10 @@ if __name__ == '__main__':
     else:
         logger = None
 
-    logger.info('\npython ' + ' '.join(sys.argv))
+    try:
+        logger.info('\npython ' + ' '.join(sys.argv))
+    except:
+        pass
 
     # prepare data
     # dataset = SkeletonDataset(num_frames=args.num_frames, sample_stride=args.sample_stride, load_data_file=args.load_data_file, data_mode=args.data_mode)
@@ -353,6 +362,11 @@ if __name__ == '__main__':
     vqvae_config.vq.nb_code = args.nb_code
     vqvae_config.vq.code_dim = args.codebook_dim
     vqvae_config.decoder.in_channels = args.codebook_dim
+
+    if args.get('downsample_time', None) is not None:
+        vqvae_config.encoder.downsample_time = args.downsample_time
+    if args.get('frame_upsample_rate', None) is not None:
+        vqvae_config.decoder.frame_upsample_rate = args.frame_upsample_rate
 
     # if args.vqvae_type == 'base':
     #     encoder = Encoder(**vqvae_config.encoder)

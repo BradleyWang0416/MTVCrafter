@@ -1,0 +1,33 @@
+(llama_factory) wxs@dbcloud:~/MTVCrafter$ sh vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe/hrFix_lvl3_ratio0.5/train.sh
+
+python test_vqvae_new.py --config vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe/hrFix_lvl3_ratio0.5/config.yaml --resume_pth vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe/hrFix_lvl3_ratio0.5/models/checkpoint_epoch_53_step_320000 --batch_size 32 --nb_code 4096 --codebook_dim 2048 --loss_type mpjpe --vqvae_type hybrid --num_frames 16 --sample_stride 1 --data_stride 16 --data_mode joint3d --hrnet_output_level 3 --vision_guidance_ratio 0.5
+Loading model...
+Loading model from vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe/hrFix_lvl3_ratio0.5/models/checkpoint_epoch_53_step_320000/model.safetensors
+Loaded model with missing keys: []
+Loaded model with unexpected keys: []
+Model loaded successfully.
+Loading dataset...
+Dataset loaded with 32704 samples.
+Testing: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 511/511 [09:27<00:00,  1.11s/it]
+
+--- Codebook Usage Statistics ---
+Total codes selected: 2223872
+Codebook size: 4096
+Number of activated codes: 3940 (96.19%)
+
+Top 5 most used codes:
+  - Code 1067: used 2199 times
+  - Code 2733: used 2176 times
+  - Code 1542: used 2130 times
+  - Code 1189: used 2113 times
+  - Code 401: used 2107 times
+
+Top 5 least used codes (among activated):
+  - Code 470: used 1 times
+  - Code 332: used 1 times
+  - Code 516: used 1 times
+  - Code 574: used 1 times
+  - Code 270: used 1 times
+
+--- Test Results ---
+Average mpjpe Reconstruction Loss: 0.004558

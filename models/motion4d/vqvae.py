@@ -255,8 +255,9 @@ class Upsample(nn.Module):
             if self.upsample_rate is not None:
                 inputs = F.interpolate(inputs, scale_factor=self.upsample_rate)
             else:
-                inputs = F.interpolate(inputs, scale_factor=(self.frame_upsample_rate, self.joint_upsample_rate), mode="linear", align_corners=True)
-            inputs = inputs[:, :, None, :, :]
+                # inputs = F.interpolate(inputs, scale_factor=(self.frame_upsample_rate, self.joint_upsample_rate), mode="linear", align_corners=True)
+                inputs = F.interpolate(inputs[:, :, None, :], scale_factor=(self.frame_upsample_rate, self.joint_upsample_rate), mode="bilinear", align_corners=True)
+            # inputs = inputs[:, :, None, :, :]
 
         b, c, t, j = inputs.shape
         inputs = inputs.permute(0, 2, 1, 3).reshape(b * t, c, j)

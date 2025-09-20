@@ -24,6 +24,8 @@ from multimodal_h36m_dataset_byBradley import Multimodal_Mocap_Dataset
 
 print('\npython ' + ' '.join(sys.argv))
 
+from accelerate import Accelerator
+
 def update_dict(v, cfg):
     for kk, vv in v.items():
         if kk in cfg:
@@ -103,6 +105,8 @@ def get_args():
     return config
 
 def test_vqvae(args):
+    accelerator = Accelerator()
+    device = accelerator.device
     # Create output directory
     # os.makedirs(args.output_dir, exist_ok=True)
     # print(f"Visualizations will be saved to: {args.output_dir}")
@@ -197,6 +201,11 @@ def test_vqvae(args):
         collate_fn=dataset.collate_fn,
         num_workers=8,
     )
+
+    # 用 accelerator.prepare 包装模型和 dataloader
+    vqvae, dataloader = accelerator.prepare(vqvae, dataloader)
+
+
     print(f"Dataset loaded with {len(dataset)} samples.")
 
     # --- 3. Run Inference and Evaluation ---
@@ -211,7 +220,7 @@ def test_vqvae(args):
         loss_fn = mpjpe_loss
 
     vis_count = 0
-    codebook_usage = torch.zeros(args.nb_code, dtype=torch.long, device='cpu')
+    codebook_usage = torch.zeros(args.nb_code, dtype=torch.long, device='cuda')
 
     with torch.no_grad():
         for i, batch in enumerate(tqdm(dataloader, desc="Testing")):
@@ -229,12 +238,11 @@ def test_vqvae(args):
                     batch[k] = v.to(args.device)
             
             # Forward pass
-            with torch.no_grad():
-                recon_data, loss_commit, indices, gt_data = vqvae(batch)
+            recon_data, loss_commit, indices, gt_data = vqvae(batch)
 
             # Update codebook usage
             if indices is not None:
-                unique_indices, counts = torch.unique(indices.cpu(), return_counts=True)
+                unique_indices, counts = torch.unique(indices, return_counts=True)
                 codebook_usage.scatter_add_(0, unique_indices, counts)
             
             """
@@ -248,39 +256,52 @@ def test_vqvae(args):
             reconstruction_loss = loss_fn(recon_data[:, :min_len], gt_data[:, :min_len])
             total_l1_loss += reconstruction_loss.item()
 
-    # --- 5. Analyze Codebook Usage ---
-    print("\n--- Codebook Usage Statistics ---")
-    total_codes_used = codebook_usage.sum().item()
-    num_codes_total = args.nb_code
-    num_codes_activated = (codebook_usage > 0).sum().item()
-    usage_percentage = (num_codes_activated / num_codes_total) * 100
-    
-    print(f"Total codes selected: {total_codes_used}")
-    print(f"Codebook size: {num_codes_total}")
-    print(f"Number of activated codes: {num_codes_activated} ({usage_percentage:.2f}%)")
+    # --- 全局同步 codebook_usage ---
+    # 所有进程的 codebook_usage 累加到主进程
+    accelerator.wait_for_everyone()
+    global_codebook_usage = codebook_usage.clone()
+    accelerator.reduce(global_codebook_usage, reduction="sum")
 
-    # Top 5 most used codes
-    top_k = min(5, num_codes_activated)
-    if top_k > 0:
-        top_counts, top_indices = torch.topk(codebook_usage, k=top_k)
-        print(f"\nTop {top_k} most used codes:")
-        for i in range(top_k):
-            print(f"  - Code {top_indices[i].item()}: used {top_counts[i].item()} times")
-
-    # Top 5 least used (but still used > 0)
-    used_mask = codebook_usage > 0
-    if used_mask.any():
-        used_codes_counts = codebook_usage[used_mask]
-        used_codes_indices = torch.arange(num_codes_total, device='cpu')[used_mask]
+    if accelerator.is_main_process:
+        # --- 5. Analyze Codebook Usage ---
+        print("\n--- Codebook Usage Statistics ---")
+        # total_codes_used = codebook_usage.cpu().sum().item()
+        # num_codes_activated = (codebook_usage > 0).sum().item()
+        global_codebook_usage = global_codebook_usage.cpu()
+        total_codes_used = global_codebook_usage.sum().item()
+        num_codes_activated = (global_codebook_usage > 0).sum().item()
+        num_codes_total = args.nb_code
+        usage_percentage = (num_codes_activated / num_codes_total) * 100
         
-        bottom_k = min(5, len(used_codes_counts))
-        if bottom_k > 0:
-            bottom_counts, bottom_indices_of_used = torch.topk(used_codes_counts, k=bottom_k, largest=False)
-            original_indices = used_codes_indices[bottom_indices_of_used]
+        print(f"Total codes selected: {total_codes_used}")
+        print(f"Codebook size: {num_codes_total}")
+        print(f"Number of activated codes: {num_codes_activated} ({usage_percentage:.2f}%)")
+
+        # Top 5 most used codes
+        top_k = min(5, num_codes_activated)
+        if top_k > 0:
+            # top_counts, top_indices = torch.topk(codebook_usage, k=top_k)
+            top_counts, top_indices = torch.topk(global_codebook_usage, k=top_k)
+            print(f"\nTop {top_k} most used codes:")
+            for i in range(top_k):
+                print(f"  - Code {top_indices[i].item()}: used {top_counts[i].item()} times")
+
+        # Top 5 least used (but still used > 0)
+        # used_mask = codebook_usage > 0
+        used_mask = global_codebook_usage > 0
+        if used_mask.any():
+            # used_codes_counts = codebook_usage[used_mask]
+            used_codes_counts = global_codebook_usage[used_mask]
+            used_codes_indices = torch.arange(num_codes_total, device='cpu')[used_mask]
             
-            print(f"\nTop {bottom_k} least used codes (among activated):")
-            for i in range(bottom_k):
-                print(f"  - Code {original_indices[i].item()}: used {bottom_counts[i].item()} times")
+            bottom_k = min(5, len(used_codes_counts))
+            if bottom_k > 0:
+                bottom_counts, bottom_indices_of_used = torch.topk(used_codes_counts, k=bottom_k, largest=False)
+                original_indices = used_codes_indices[bottom_indices_of_used]
+                
+                print(f"\nTop {bottom_k} least used codes (among activated):")
+                for i in range(bottom_k):
+                    print(f"  - Code {original_indices[i].item()}: used {bottom_counts[i].item()} times")
 
 
 

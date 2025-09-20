@@ -140,16 +140,16 @@ class HYBRID_VQVAE(nn.Module):
         joint_feats = joint3d_video.permute(0, 3, 1, 2)   # [B,49,17,3] -> [B,3,49,17]
         indices = None
         if not self.vq.is_train:
-            joint_feats, loss, indices, _ = self.encdec_slice_frames(joint_feats, frame_batch_size=8, encdec=self.encoder, return_vq=return_vq, vision_feats=vision_feats)
+            joint_feats, loss, indices, _ = self.encdec_slice_frames(joint_feats, frame_batch_size=min(8, joint_gt.shape[1]), encdec=self.encoder, return_vq=return_vq, vision_feats=vision_feats)
         else:
-            joint_feats, loss, perplexity, _ = self.encdec_slice_frames(joint_feats, frame_batch_size=8, encdec=self.encoder, return_vq=return_vq, vision_feats=vision_feats)
+            joint_feats, loss, perplexity, _ = self.encdec_slice_frames(joint_feats, frame_batch_size=min(8, joint_gt.shape[1]), encdec=self.encoder, return_vq=return_vq, vision_feats=vision_feats)
         if return_vq:
             return joint_feats, loss
-        joint_feats, _, _, _ = self.encdec_slice_frames(joint_feats, frame_batch_size=2, encdec=self.decoder, return_vq=return_vq)
+        joint_feats, _, _, _ = self.encdec_slice_frames(joint_feats, frame_batch_size=min(2, joint_gt.shape[1]), encdec=self.decoder, return_vq=return_vq)
         joint_feats = joint_feats.permute(0, 2, 3, 1)
         if self.vq.is_train:
             return joint_feats, loss, perplexity, joint_gt
-        return joint_feats, loss, indices  
+        return joint_feats, loss, indices, joint_gt
 
     def encdec_slice_frames(self, joint_feats, frame_batch_size, encdec, return_vq, vision_feats=None):
         num_frames = joint_feats.shape[2]
@@ -190,7 +190,7 @@ class HYBRID_VQVAE(nn.Module):
         else:
             vision_feats = None
         joint_feats = joint3d_video.permute(0, 3, 1, 2)   # [B,49,17,3] -> [B,3,49,17]
-        _, _, indices, quant_shape = self.encdec_slice_frames(joint_feats, frame_batch_size=8, encdec=self.encoder, return_vq=return_vq, vision_feats=vision_feats)
+        _, _, indices, quant_shape = self.encdec_slice_frames(joint_feats, frame_batch_size=min(8, joint_feats.shape[-2]), encdec=self.encoder, return_vq=return_vq, vision_feats=vision_feats)
         return indices, quant_shape
 
     def get_code_from_indices(self, indices):

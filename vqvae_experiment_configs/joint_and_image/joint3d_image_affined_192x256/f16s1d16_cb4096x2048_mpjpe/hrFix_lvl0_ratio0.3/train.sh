@@ -4,7 +4,7 @@ mode=train
 EXP_NAME=joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe/hrFix_lvl0_ratio0.3
 CONFIG=vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe/hrFix_lvl0_ratio0.3/config.yaml
 LOG=vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe/hrFix_lvl0_ratio0.3/train.log
-RESUME_PATH=''
+RESUME_PATH=vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe/hrFix_lvl0_ratio0.3/models/checkpoint_epoch_60_step_180000
 
 BATCH_SIZE=32
 
