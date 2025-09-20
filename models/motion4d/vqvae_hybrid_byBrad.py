@@ -81,7 +81,7 @@ class HYBRID_VQVAE(nn.Module):
             self.vision_encoder = VisionEncoder(
                 mid_channels=[self.num_vision_channels, 512],
                 out_channels=code_dim_vision,
-                downsample_time=[2, 2],
+                downsample_time=encoder.downsample_time,
                 downsample_joint=[1, 1],
             )
     
