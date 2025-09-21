@@ -1,0 +1,34 @@
+(llama_factory) wxs@dbcloud:~/MTVCrafter$ sh vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f1s1d1_cb4096x2048_mpjpe/hrFix_lvl3_ratio0.5/train.sh
+
+python test_vqvae_new.py --config vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f1s1d1_cb4096x2048_mpjpe/hrFix_lvl3_ratio0.5/config.yaml --resume_pth vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f1s1d1_cb4096x2048_mpjpe/hrFix_lvl3_ratio0.5/models/checkpoint_epoch_42_step_500000 --batch_size 128 --nb_code 4096 --codebook_dim 2048 --loss_type mpjpe_millimeter --vqvae_type hybrid --num_frames 1 --sample_stride 1 --data_stride 1 --data_mode joint3d --hrnet_output_level 3 --vision_guidance_ratio 0.5 --downsample_time [1,1] --frame_upsample_rate [1.0,1.0]
+Detected kernel version 5.4.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+Loading model...
+Loading model from vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f1s1d1_cb4096x2048_mpjpe/hrFix_lvl3_ratio0.5/models/checkpoint_epoch_42_step_500000/model.safetensors
+Loaded model with missing keys: []
+Loaded model with unexpected keys: []
+Model loaded successfully.
+Loading dataset...
+Dataset loaded with 524892 samples.
+Testing: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 4101/4101 [13:00<00:00,  5.26it/s]
+
+--- Codebook Usage Statistics ---
+Total codes selected: 8923164
+Codebook size: 4096
+Number of activated codes: 2003 (48.90%)
+
+Top 5 most used codes:
+  - Code 3090: used 37406 times
+  - Code 2301: used 36631 times
+  - Code 599: used 29948 times
+  - Code 3436: used 28988 times
+  - Code 2541: used 24927 times
+
+Top 5 least used codes (among activated):
+  - Code 1257: used 1 times
+  - Code 3780: used 1 times
+  - Code 839: used 2 times
+  - Code 3800: used 3 times
+  - Code 2303: used 5 times
+
+--- Test Results ---
+Average mpjpe_millimeter Reconstruction Loss: 18.793549

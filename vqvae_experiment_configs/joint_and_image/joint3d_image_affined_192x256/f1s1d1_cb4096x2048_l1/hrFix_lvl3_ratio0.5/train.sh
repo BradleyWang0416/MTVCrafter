@@ -1,15 +1,15 @@
 # mode=debug
-mode=train
-# mode=test
+# mode=train
+mode=test
 
 EXP_NAME=joint_and_image/joint3d_image_affined_192x256/f1s1d1_cb4096x2048_l1/hrFix_lvl3_ratio0.5
 CONFIG=vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f1s1d1_cb4096x2048_l1/hrFix_lvl3_ratio0.5/config.yaml
 LOG=vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f1s1d1_cb4096x2048_l1/hrFix_lvl3_ratio0.5/train.log
 
 if [ "$mode" = "test" ]; then
-    RESUME_PATH=vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_l1/hrFix_lvl3_ratio0.5/models/checkpoint_epoch_53_step_320000
-    LOSS_TYPE=l1     # l1, mpjpe
-    BATCH_SIZE=32
+    RESUME_PATH=vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f1s1d1_cb4096x2048_l1/hrFix_lvl3_ratio0.5/models/checkpoint_epoch_42_step_500000
+    LOSS_TYPE=mpjpe_millimeter     # l1, mpjpe
+    BATCH_SIZE=128
 else
     RESUME_PATH=""
     LOSS_TYPE=l1     # l1, mpjpe
@@ -63,10 +63,10 @@ if [ "$mode" = "debug" ]; then
         $FIX_WEIGHTS_ARG \
         --resume_pth "${RESUME_PATH}"
 elif [ "$mode" = "test" ]; then
-        # python \
         # -m debugpy --listen 5680 --wait-for-client \
-    CUDA_VISIBLE_DEVICES=3,4,5,6,7 \
-        accelerate launch --num_processes 5 \
+        # accelerate launch --num_processes 5 \
+    CUDA_VISIBLE_DEVICES=3 \
+        python -u \
         test_vqvae_new.py \
         --config ${CONFIG} \
         --resume_pth "${RESUME_PATH}" \

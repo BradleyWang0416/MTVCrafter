@@ -19,4 +19,6 @@ backbone: hrnet_32
 
 # dataloader config
 get_item_list: [factor_2_5d,
-                video_rgb, joint3d_image_affined, joint3d_image_affined_normed, joint3d_image_affined_scale, joint3d_image_affined_transl]
+                video_rgb, joint3d_image_affined, joint3d_image_affined_normed, joint3d_image_affined_scale, joint3d_image_affined_transl,
+                'affine_trans', 'affine_trans_inv',
+                'joint_2_5d_image']

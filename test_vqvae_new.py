@@ -17,9 +17,9 @@ from draw_pose import get_pose_images
 from models import HYBRID_VQVAE
 
 import sys
-sys.path.append("/home/wxs/Skeleton-in-Context-tpami/")
+sys.path.append("../Skeleton-in-Context-tpami/")
 from lib.utils.viz_skel_seq import viz_skel_seq_anim
-sys.path.append("/home/wxs/ContextAwarePoseFormer_Private/H36M-Toolbox/")
+sys.path.append("../ContextAwarePoseFormer_Private/H36M-Toolbox/")
 from multimodal_h36m_dataset_byBradley import Multimodal_Mocap_Dataset
 
 print('\npython ' + ' '.join(sys.argv))
@@ -63,7 +63,7 @@ def get_args():
     # Environment
     parser.add_argument('--device', type=str, default='cuda' if torch.cuda.is_available() else 'cpu', help="Device to run the test on.")
 
-    parser.add_argument('--loss_type', type=str, default='l1')
+    parser.add_argument('--loss_type', type=str, default='l1', choices=['l1', 'mpjpe', 'mpjpe_millimeter'])
     parser.add_argument('--vqvae_type', type=str, default='base')
     parser.add_argument('--joint_data_type', type=str, default='joint3d_image_affined_normed')
 
@@ -89,6 +89,8 @@ def get_args():
     parser.add_argument('--hrnet_output_level', type=int, default=None, help="int or list. 0,1,2,3 分别对应输出 [B,32,H/4,W/4], [B,64,H/8,W/8], [B,128,H/16,W/16], [B,256,H/32,W/32] 的特征")
     parser.add_argument('--vision_guidance_ratio', type=float, default=None)
     
+    parser.add_argument('--downsample_time', type=str, default=None)
+    parser.add_argument('--frame_upsample_rate', type=str, default=None)
     args = parser.parse_args()
 
     if isinstance(args.return_extra, str):
@@ -99,6 +101,10 @@ def get_args():
         args.get_item_list = ast.literal_eval(args.get_item_list)
     if isinstance(args.hrnet_output_level, str):
         args.hrnet_output_level = ast.literal_eval(args.hrnet_output_level)
+    if isinstance(args.downsample_time, str):
+        args.downsample_time = ast.literal_eval(args.downsample_time)
+    if isinstance(args.frame_upsample_rate, str):
+        args.frame_upsample_rate = ast.literal_eval(args.frame_upsample_rate)
 
     config = update_config(args.config, args)
 
@@ -117,6 +123,12 @@ def test_vqvae(args):
     vqvae_config.vq.nb_code = args.nb_code
     vqvae_config.vq.code_dim = args.codebook_dim
     vqvae_config.decoder.in_channels = args.codebook_dim
+
+    if args.get('downsample_time', None) is not None:
+        vqvae_config.encoder.downsample_time = args.downsample_time
+    if args.get('frame_upsample_rate', None) is not None:
+        vqvae_config.decoder.frame_upsample_rate = args.frame_upsample_rate
+        
     if args.get('hrnet_output_level', None) is not None:
         vision_config.model.hybrid.hrnet_output_level = args.hrnet_output_level
     if args.get('vision_guidance_ratio', None) is not None:
@@ -214,7 +226,7 @@ def test_vqvae(args):
 
     if args.loss_type == 'l1':
         loss_fn = torch.nn.L1Loss()
-    elif args.loss_type == 'mpjpe':
+    elif args.loss_type in ['mpjpe', 'mpjpe_millimeter']:
         def mpjpe_loss(pred, target):
             return torch.mean(torch.norm(pred - target, dim=-1))
         loss_fn = mpjpe_loss
@@ -240,21 +252,48 @@ def test_vqvae(args):
             # Forward pass
             recon_data, loss_commit, indices, gt_data = vqvae(batch)
 
+            """
+            viz_skel_seq_anim({'recon':recon_data[0], 'gt':batch[0]},fs=0.5,subplot_layout=(1,2),if_print=1,file_folder='.',lim3d=0.5)
+            """
+
             # Update codebook usage
             if indices is not None:
                 unique_indices, counts = torch.unique(indices, return_counts=True)
                 codebook_usage.scatter_add_(0, unique_indices, counts)
             
-            """
-            viz_skel_seq_anim({'recon':recon_data[0], 'gt':batch[0]},fs=0.5,subplot_layout=(1,2),if_print=1,file_folder='.',lim3d=0.5)
-            """
-
             # Ensure batch and recon_data have same length for loss calculation
             min_len = min(gt_data.shape[1], recon_data.shape[1])
-            
+
+
+
+            if args.loss_type == 'mpjpe_millimeter':
+                recon_data_affined = (recon_data + batch.joint3d_image_affined_transl[..., None, :]) * batch.joint3d_image_affined_scale[..., None, :]
+                recon_data_affined_xy = recon_data_affined[..., :2].clone()   # [B,T,17,2]
+                trans_inv = batch.affine_trans_inv   # [B,T,2,3]
+                recon_data_affined_xy1 = torch.cat([recon_data_affined_xy, torch.ones_like(recon_data_affined_xy[..., :1])], dim=-1)# [B,T,17,3]
+                recon_data_3dimage_xy = torch.einsum('btij,btkj->btki', trans_inv, recon_data_affined_xy1)# [B,T,17,2]
+                recon_data_3dimage = torch.cat([recon_data_3dimage_xy, recon_data_affined[..., 2:]], dim=-1)# [B,T,17,3]
+
+                factor_2_5d = batch.factor_2_5d[..., None, None]  # [B,1,1]
+
+                recon_data_2_5dimage = recon_data_3dimage * factor_2_5d
+                gt_data_2_5dimage = batch.joint_2_5d_image  # [B,T,17,3]
+
+                recon_data_2_5dimage_rootrel = recon_data_2_5dimage - recon_data_2_5dimage[..., 0:1, :]
+                gt_data_2_5dimage_rootrel = gt_data_2_5dimage - gt_data_2_5dimage[..., 0:1, :]
+
+                mpjpe_millimeter = torch.norm(recon_data_2_5dimage_rootrel - gt_data_2_5dimage_rootrel, dim=-1).mean((-2, -1))
+
+
+                recon_data = recon_data_2_5dimage_rootrel
+                gt_data = gt_data_2_5dimage_rootrel
+
+
             # Calculate loss
             reconstruction_loss = loss_fn(recon_data[:, :min_len], gt_data[:, :min_len])
             total_l1_loss += reconstruction_loss.item()
+
+
 
     # --- 全局同步 codebook_usage ---
     # 所有进程的 codebook_usage 累加到主进程

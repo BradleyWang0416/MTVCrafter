@@ -21,9 +21,9 @@ from models import HYBRID_VQVAE
 from dataset_byBradley import SkeletonDataset
 
 import sys
-sys.path.append("/home/wxs/Skeleton-in-Context-tpami/")
+sys.path.append("../Skeleton-in-Context-tpami/")
 from lib.utils.viz_skel_seq import viz_skel_seq_anim
-sys.path.append("/home/wxs/ContextAwarePoseFormer_Private/H36M-Toolbox/")
+sys.path.append("../ContextAwarePoseFormer_Private/H36M-Toolbox/")
 from multimodal_h36m_dataset_byBradley import Multimodal_Mocap_Dataset
 
 
@@ -76,7 +76,7 @@ def get_args():
 
     parser.add_argument('--not_find_unused_parameters', action='store_true')
 
-    parser.add_argument('--loss_type', type=str, default='l1')
+    parser.add_argument('--loss_type', type=str, default='l1', choices=['l1', 'mpjpe'])
 
     parser.add_argument('--vqvae_type', type=str, default='base')
     parser.add_argument('--joint_data_type', type=str, default='joint3d_image_affined_normed')

@@ -1,5 +1,5 @@
-# mode=debug
-mode=train
+mode=debug
+# mode=train
 # mode=test
 
 EXP_NAME="joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5"
@@ -40,7 +40,7 @@ else
 fi
 
 if [ "$mode" = "debug" ]; then
-    CUDA_VISIBLE_DEVICES=5 \
+    CUDA_VISIBLE_DEVICES=3 \
         python \
         -m debugpy --listen 5678 --wait-for-client \
         train_vqvae_new.py \
