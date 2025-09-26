@@ -1,14 +1,14 @@
 # mode=debug
-mode=train
-# mode=test
+# mode=train
+mode=test
 
 EXP_NAME="joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5"
 CONFIG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/config.yaml"
 LOG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/train.log"
 
 if [ "$mode" = "test" ]; then
-    RESUME_PATH="vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/models/checkpoint_epoch_99_step_460000"
-    LOSS_TYPE=mpjpe     # l1, mpjpe
+    RESUME_PATH="vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/models/checkpoint_epoch_395_step_300000"
+    LOSS_TYPE=mpjpe_millimeter     # l1, mpjpe, mpjpe_millimeter
     BATCH_SIZE=32
 else
     RESUME_PATH=""
@@ -65,7 +65,7 @@ if [ "$mode" = "debug" ]; then
 elif [ "$mode" = "test" ]; then
         # -m debugpy --listen 5680 --wait-for-client \
         # accelerate launch --num_processes 5 \
-    CUDA_VISIBLE_DEVICES=2 \
+    CUDA_VISIBLE_DEVICES=3 \
         python \
         test_vqvae_new.py \
         --config ${CONFIG} \

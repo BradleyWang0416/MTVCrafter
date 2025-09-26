@@ -3,7 +3,7 @@ sample_stride: 1
 data_stride: 16
 data_mode: joint3d
 
-load_data_file: /data2/wxs/DATASETS/Human3.6M_for_MotionBERT/h36m_sh_conf_cam_source_final.pkl
+load_data_file: /data2/wxs/DATASETS/Human3.6M_for_MotionBERT/h36m_sh_conf_cam_source_final_wImgPath_wJ3dCam_wJ2dCpn.pkl
 load_image_source_file: ''
 load_bbox_file: ''
 load_text_source_file: ''
