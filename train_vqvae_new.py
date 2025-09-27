@@ -315,6 +315,7 @@ if __name__ == '__main__':
 
     try:
         logger.info('\npython ' + ' '.join(sys.argv))
+        logger.info('\nPID ', os.getpid())
     except:
         pass
 
@@ -416,7 +417,11 @@ if __name__ == '__main__':
             logger.info('Resuming from epoch {} and iteration {}'.format(resume_epoch, resume_iter))
         # try:
         state_dict = load_safetensors(os.path.join(args.resume_pth, "model.safetensors"), device="cpu")
-        missing_keys, unexpected_keys = vqvae.load_state_dict(state_dict, strict=False)
+        try: 
+            missing_keys, unexpected_keys = vqvae.load_state_dict(state_dict, strict=True)
+        except Exception as e:
+            state_dict = {'module.'+k: v for k, v in state_dict.items()}
+            missing_keys, unexpected_keys = vqvae.load_state_dict(state_dict, strict=True)
         print(f"Missing keys: {missing_keys}")
         print(f"Unexpected keys: {unexpected_keys}")
         # except:

@@ -31,3 +31,6 @@ Top 5 least used codes (among activated):
 
 --- Test Results ---
 Average mpjpe Reconstruction Loss: 0.005164
+
+
+Average mpjpe_millimeter Reconstruction Loss: 7.691216

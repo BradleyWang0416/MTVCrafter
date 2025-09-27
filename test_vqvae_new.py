@@ -267,26 +267,36 @@ def test_vqvae(args):
 
 
             if args.loss_type == 'mpjpe_millimeter':
-                recon_data_affined = (recon_data + batch.joint3d_image_affined_transl[..., None, :]) * batch.joint3d_image_affined_scale[..., None, :]
-                recon_data_affined_xy = recon_data_affined[..., :2].clone()   # [B,T,17,2]
-                trans_inv = batch.affine_trans_inv   # [B,T,2,3]
-                recon_data_affined_xy1 = torch.cat([recon_data_affined_xy, torch.ones_like(recon_data_affined_xy[..., :1])], dim=-1)# [B,T,17,3]
-                recon_data_3dimage_xy = torch.einsum('btij,btkj->btki', trans_inv, recon_data_affined_xy1)# [B,T,17,2]
-                recon_data_3dimage = torch.cat([recon_data_3dimage_xy, recon_data_affined[..., 2:]], dim=-1)# [B,T,17,3]
 
-                factor_2_5d = batch.factor_2_5d[..., None, None]  # [B,1,1]
+                if args.joint_data_type == 'joint3d_cam_rootrel_meter':
+                    recon_data = (recon_data - recon_data[..., 0:1, :]) * 1000.0  # to millimeter
+                    gt_data = (gt_data - gt_data[..., 0:1, :]) * 1000.0                    
 
-                recon_data_2_5dimage = recon_data_3dimage * factor_2_5d
-                gt_data_2_5dimage = batch.joint_2_5d_image  # [B,T,17,3]
+                else:
+                    if args.joint_data_type == 'joint3d_image_affined_normed':
+                        recon_data_affined = (recon_data + batch.joint3d_image_affined_transl[..., None, :]) * batch.joint3d_image_affined_scale[..., None, :]
+                        recon_data_affined_xy = recon_data_affined[..., :2].clone()   # [B,T,17,2]
+                        trans_inv = batch.affine_trans_inv   # [B,T,2,3]
+                        recon_data_affined_xy1 = torch.cat([recon_data_affined_xy, torch.ones_like(recon_data_affined_xy[..., :1])], dim=-1)# [B,T,17,3]
+                        recon_data_3dimage_xy = torch.einsum('btij,btkj->btki', trans_inv, recon_data_affined_xy1)# [B,T,17,2]
+                        recon_data_3dimage = torch.cat([recon_data_3dimage_xy, recon_data_affined[..., 2:]], dim=-1)# [B,T,17,3]
 
-                recon_data_2_5dimage_rootrel = recon_data_2_5dimage - recon_data_2_5dimage[..., 0:1, :]
-                gt_data_2_5dimage_rootrel = gt_data_2_5dimage - gt_data_2_5dimage[..., 0:1, :]
+                    elif args.joint_data_type == 'joint3d_image_normed':
+                        recon_data_3dimage = (recon_data + batch.joint3d_image_transl[..., None, :]) * batch.joint3d_image_scale[..., None, :]
 
-                mpjpe_millimeter = torch.norm(recon_data_2_5dimage_rootrel - gt_data_2_5dimage_rootrel, dim=-1).mean((-2, -1))
+                    factor_2_5d = batch.factor_2_5d[..., None, None]  # [B,1,1]
+
+                    recon_data_2_5dimage = recon_data_3dimage * factor_2_5d
+                    gt_data_2_5dimage = batch.joint_2_5d_image  # [B,T,17,3]
+
+                    recon_data_2_5dimage_rootrel = recon_data_2_5dimage - recon_data_2_5dimage[..., 0:1, :]
+                    gt_data_2_5dimage_rootrel = gt_data_2_5dimage - gt_data_2_5dimage[..., 0:1, :]
+
+                    mpjpe_millimeter = torch.norm(recon_data_2_5dimage_rootrel - gt_data_2_5dimage_rootrel, dim=-1).mean((-2, -1))
 
 
-                recon_data = recon_data_2_5dimage_rootrel
-                gt_data = gt_data_2_5dimage_rootrel
+                    recon_data = recon_data_2_5dimage_rootrel
+                    gt_data = gt_data_2_5dimage_rootrel
 
 
             # Calculate loss

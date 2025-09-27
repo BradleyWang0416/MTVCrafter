@@ -9,7 +9,7 @@ LOG=vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1
 
 if [ "$mode" = "test" ]; then
     RESUME_PATH=vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe/hrFix_lvl3_ratio0/models/checkpoint_epoch_7_step_500000
-    LOSS_TYPE=mpjpe     # l1, mpjpe
+    LOSS_TYPE=mpjpe_millimeter     # l1, mpjpe
     BATCH_SIZE=64
 else
     RESUME_PATH=vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe/hrFix_lvl3_ratio0/models/checkpoint_epoch_158_step_480000

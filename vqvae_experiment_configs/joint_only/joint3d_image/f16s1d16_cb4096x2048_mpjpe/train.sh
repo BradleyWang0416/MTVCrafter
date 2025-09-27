@@ -1,23 +1,26 @@
 # mode=debug
-mode=train
-# mode=test
+# mode=train
+mode=test
 
-EXP_NAME="joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5"
-CONFIG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/config.yaml"
-LOG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/train.log"
+
+joint_data_type=joint3d_image_normed
+
+EXP_NAME=joint_only/joint3d_image/f16s1d16_cb4096x2048_mpjpe
+CONFIG=vqvae_experiment_configs/joint_only/joint3d_image/f16s1d16_cb4096x2048_mpjpe/config.yaml
+LOG=vqvae_experiment_configs/joint_only/joint3d_image/f16s1d16_cb4096x2048_mpjpe/train.log
 
 if [ "$mode" = "test" ]; then
-    RESUME_PATH="vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/models/checkpoint_epoch_211_step_160000"
+    RESUME_PATH=vqvae_experiment/joint_only/joint3d_image/f16s1d16_cb4096x2048_mpjpe/models/checkpoint_epoch_290_step_440000
     LOSS_TYPE=mpjpe_millimeter     # l1, mpjpe
     BATCH_SIZE=64
 else
-    RESUME_PATH="vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/models/checkpoint_epoch_211_step_160000"
+    RESUME_PATH=""
     LOSS_TYPE=mpjpe     # l1, mpjpe
     BATCH_SIZE=64
 fi
 
 
-DATA_MODE=joint3d
+DATA_MODE=null
 
 NUM_CODE=4096   # 8192
 CODE_DIM=2048   # 3072
@@ -28,7 +31,7 @@ DATA_STRIDE=16
 
 VQVAE_TYPE=hybrid  # base, hybrid
 HRNET_OUTPUT_LEVEL=3    # int or list. 0,1,2,3 分别对应输出 [B,32,H/4,W/4], [B,64,H/8,W/8], [B,128,H/16,W/16], [B,256,H/32,W/32] 的特征
-VISION_GUIDANCE_RATIO=0.5
+VISION_GUIDANCE_RATIO=0
 
 FIX_WEIGHTS=True
 
@@ -40,9 +43,9 @@ else
 fi
 
 if [ "$mode" = "debug" ]; then
-    CUDA_VISIBLE_DEVICES=3 \
+    CUDA_VISIBLE_DEVICES=5 \
         python \
-        -m debugpy --listen 5678 --wait-for-client \
+        -m debugpy --listen 5680 --wait-for-client \
         train_vqvae_new.py \
         --batch_size ${BATCH_SIZE} \
         --config ${CONFIG} \
@@ -58,13 +61,12 @@ if [ "$mode" = "debug" ]; then
         --vqvae_type ${VQVAE_TYPE} \
         --hrnet_output_level ${HRNET_OUTPUT_LEVEL} \
         --vision_guidance_ratio ${VISION_GUIDANCE_RATIO} \
-        --downsample_time "[1,2]" \
-        --frame_upsample_rate "[2.0,1.0]" \
+        --joint_data_type ${joint_data_type} \
         $FIX_WEIGHTS_ARG \
         --resume_pth "${RESUME_PATH}"
 elif [ "$mode" = "test" ]; then
-        # -m debugpy --listen 5680 --wait-for-client \
         # accelerate launch --num_processes 5 \
+        # -m debugpy --listen 5680 --wait-for-client \
     CUDA_VISIBLE_DEVICES=4 \
         python \
         test_vqvae_new.py \
@@ -81,13 +83,11 @@ elif [ "$mode" = "test" ]; then
         --data_mode ${DATA_MODE} \
         --hrnet_output_level ${HRNET_OUTPUT_LEVEL} \
         --vision_guidance_ratio ${VISION_GUIDANCE_RATIO} \
-        --downsample_time "[1,2]" \
-        --frame_upsample_rate "[2.0,1.0]"
+        --joint_data_type ${joint_data_type}
 else
-        # python -u train_vqvae_new.py \
-    CUDA_VISIBLE_DEVICES=0,1 \
+    CUDA_VISIBLE_DEVICES=2 \
         nohup \
-        accelerate launch --num_processes 2 \
+        accelerate launch --num_processes 1 \
         train_vqvae_new.py \
         --batch_size ${BATCH_SIZE} \
         --config ${CONFIG} \
@@ -103,9 +103,8 @@ else
         --vqvae_type ${VQVAE_TYPE} \
         --hrnet_output_level ${HRNET_OUTPUT_LEVEL} \
         --vision_guidance_ratio ${VISION_GUIDANCE_RATIO} \
-        --downsample_time "[1,2]" \
-        --frame_upsample_rate "[2.0,1.0]" \
         $FIX_WEIGHTS_ARG \
         --resume_pth "${RESUME_PATH}" \
+        --joint_data_type ${joint_data_type} \
         > ${LOG} &
 fi

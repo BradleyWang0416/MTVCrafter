@@ -1,0 +1,34 @@
+(llama_factory) wxs@dbcloud:~/MTVCrafter$ sh vqvae_experiment_configs/joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/train.sh
+
+python test_vqvae_new.py --config vqvae_experiment_configs/joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/config.yaml --resume_pth vqvae_experiment/joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/models/checkpoint_epoch_158_step_240000 --batch_size 64 --nb_code 4096 --codebook_dim 2048 --loss_type mpjpe_millimeter --vqvae_type hybrid --num_frames 16 --sample_stride 1 --data_stride 16 --data_mode null --hrnet_output_level 3 --vision_guidance_ratio 0 --joint_data_type joint3d_cam_rootrel_meter --downsample_time [1,2] --frame_upsample_rate [2.0,1.0]
+Detected kernel version 5.4.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+Loading model...
+Loading model from vqvae_experiment/joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/models/checkpoint_epoch_158_step_240000/model.safetensors
+Loaded model with missing keys: []
+Loaded model with unexpected keys: []
+Model loaded successfully.
+Loading dataset...
+Dataset loaded with 35328 samples.
+Testing: 100%|████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 552/552 [01:37<00:00,  5.69it/s]
+
+--- Codebook Usage Statistics ---
+Total codes selected: 4804608
+Codebook size: 4096
+Number of activated codes: 1930 (47.12%)
+
+Top 5 most used codes:
+  - Code 2468: used 18158 times
+  - Code 662: used 17861 times
+  - Code 3437: used 17834 times
+  - Code 649: used 16497 times
+  - Code 700: used 16471 times
+
+Top 5 least used codes (among activated):
+  - Code 2895: used 12 times
+  - Code 2349: used 27 times
+  - Code 1913: used 35 times
+  - Code 4083: used 47 times
+  - Code 36: used 48 times
+
+--- Test Results ---
+Average mpjpe_millimeter Reconstruction Loss: 15.187724
