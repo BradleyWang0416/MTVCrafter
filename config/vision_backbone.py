@@ -16,7 +16,7 @@ config.model.backbone.num_joints = 17
 config.model.backbone.num_layers = 152
 config.model.backbone.init_weights = True
 config.model.backbone.fix_weights = False
-config.model.backbone.checkpoint = "/data2/wxs/ContextAware-PoseFormer/ContextPose/data/pretrained/coco/pose_hrnet_w32_256x192.pth"
+config.model.backbone.checkpoint = "../ContextAware-PoseFormer/ContextPose/data/pretrained/coco/pose_hrnet_w32_256x192.pth"
 
 # pose_hrnet related params
 # config.model.backbone = edict()
