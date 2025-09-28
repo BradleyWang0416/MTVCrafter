@@ -16,9 +16,9 @@ from safetensors.torch import load_file as load_safetensors
 
 from config.vision_backbone import config as vision_config
 from config.vqvae import vqvae_config
-from models import SMPL_VQVAE, VectorQuantizer, Encoder, Decoder
+# from models import SMPL_VQVAE, VectorQuantizer, Encoder, Decoder
 from models import HYBRID_VQVAE
-from dataset_byBradley import SkeletonDataset
+# from dataset_byBradley import SkeletonDataset
 
 import sys
 sys.path.append("../Skeleton-in-Context-tpami/")
@@ -102,6 +102,7 @@ def get_args():
     # VISION BACKBONE config. 如果在命令行中指定，则覆盖vision_config中的配置
     parser.add_argument('--hrnet_output_level', type=int, default=None, help="int or list. 0,1,2,3 分别对应输出 [B,32,H/4,W/4], [B,64,H/8,W/8], [B,128,H/16,W/16], [B,256,H/32,W/32] 的特征")
     parser.add_argument('--fix_weights', action='store_true')
+    parser.add_argument('--fix_weights_except', type=str, default='PLACEHOLDERPLACEHOLDERPLACEHOLDER')
     parser.add_argument('--vision_guidance_ratio', type=float, default=None)
 
     parser.add_argument('--downsample_time', type=str, default=None)
@@ -315,7 +316,7 @@ if __name__ == '__main__':
 
     try:
         logger.info('\npython ' + ' '.join(sys.argv))
-        logger.info('\nPID ', os.getpid())
+        logger.info('\nPID: '+str(os.getpid()))
     except:
         pass
 
@@ -387,9 +388,20 @@ if __name__ == '__main__':
             vision_config.model.backbone.fix_weights = args.fix_weights
         if vision_config.model.backbone.fix_weights:
             print("vision backbone weights are fixed")
-            for p in vqvae.vision_backbone.parameters():
-                p.requires_grad = False
-            vqvae.vision_backbone.eval()
+
+
+            
+            fix_weights_except = args.fix_weights_except.split(',')
+
+
+            for name, p in vqvae.vision_backbone.named_parameters():
+                if any(except_str in name for except_str in fix_weights_except):
+                    p.requires_grad = True
+                else:
+                    p.requires_grad = False
+            
+            if all(not p.requires_grad for p in vqvae.vision_backbone.parameters()):
+                vqvae.vision_backbone.eval()
 
     # 统计可学习和不可学习参数量
     def count_parameters(model):

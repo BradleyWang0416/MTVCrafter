@@ -14,9 +14,9 @@ from dataset_byBradley import SkeletonDataset
 from draw_pose import get_pose_images
 
 import sys
-sys.path.append("/home/wxs/Skeleton-in-Context-tpami/")
+sys.path.append("../Skeleton-in-Context-tpami/")
 from lib.utils.viz_skel_seq import viz_skel_seq_anim
-sys.path.append("/home/wxs/ContextAwarePoseFormer_Private/H36M-Toolbox/")
+sys.path.append("../ContextAwarePoseFormer_Private/H36M-Toolbox/")
 from multimodal_h36m_dataset_byBradley import Multimodal_Mocap_Dataset
 
 print('\npython ' + ' '.join(sys.argv))

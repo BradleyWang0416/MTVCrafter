@@ -1,16 +1,16 @@
 # mode=debug
-mode=train
-# mode=test
+# mode=train
+mode=test
 
 
-joint_data_type=joint3d_image_normed
+joint_data_type=joint3d_cam_rootrel_meter
 
-EXP_NAME=joint_only/joint3d_image/f16s1d16_cb8192x3072_mpjpe_Tdown1-2
-CONFIG=vqvae_experiment_configs/joint_only/joint3d_image/f16s1d16_cb8192x3072_mpjpe_Tdown1-2/config.yaml
-LOG=vqvae_experiment_configs/joint_only/joint3d_image/f16s1d16_cb8192x3072_mpjpe_Tdown1-2/train.log
+EXP_NAME=joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb8192x3072_mpjpe_Tdown1-2
+CONFIG=vqvae_experiment_configs/joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb8192x3072_mpjpe_Tdown1-2/config.yaml
+LOG=vqvae_experiment_configs/joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb8192x3072_mpjpe_Tdown1-2/train.log
 
 if [ "$mode" = "test" ]; then
-    RESUME_PATH=""
+    RESUME_PATH="vqvae_experiment/joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb8192x3072_mpjpe_Tdown1-2/models/checkpoint_epoch_330_step_500000"
     LOSS_TYPE=mpjpe_millimeter     # l1, mpjpe
     BATCH_SIZE=64
 else
@@ -89,7 +89,7 @@ elif [ "$mode" = "test" ]; then
         --downsample_time "[1,2]" \
         --frame_upsample_rate "[2.0,1.0]"
 else
-    CUDA_VISIBLE_DEVICES=2 \
+    CUDA_VISIBLE_DEVICES=3 \
         nohup \
         accelerate launch --num_processes 1 \
         train_vqvae_new.py \

@@ -10,7 +10,7 @@ CONFIG=vqvae_experiment_configs/joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb
 LOG=vqvae_experiment_configs/joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/train.log
 
 if [ "$mode" = "test" ]; then
-    RESUME_PATH="vqvae_experiment/joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/models/checkpoint_epoch_158_step_240000"
+    RESUME_PATH="vqvae_experiment/joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/models/checkpoint_epoch_330_step_500000"
     LOSS_TYPE=mpjpe_millimeter     # l1, mpjpe
     BATCH_SIZE=64
 else

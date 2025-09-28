@@ -6,9 +6,9 @@ import numpy as np
 from .vqvae import SMPL_VQVAE, ResBlock, Downsample, Encoder, Decoder, VectorQuantizer
 
 import sys
-sys.path.append('/home/wxs/ContextAware-PoseFormer/ContextPose/mvn/models/')
+sys.path.append('../ContextAware-PoseFormer/ContextPose/mvn/models/')
 import pose_hrnet
-sys.path.remove('/home/wxs/ContextAware-PoseFormer/ContextPose/mvn/models/')
+sys.path.remove('../ContextAware-PoseFormer/ContextPose/mvn/models/')
 
 class VisionEncoder(nn.Module):
     def __init__(
