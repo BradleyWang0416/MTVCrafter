@@ -10,7 +10,7 @@ CONFIG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f
 LOG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/hrFixExclStage4.2_lvl3_ratio0.5/train.log"
 
 if [ "$mode" = "test" ]; then
-    RESUME_PATH="vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/hrFixExclStage4.2_lvl3_ratio0.5/models/checkpoint_epoch_132_step_80000"
+    RESUME_PATH="vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/hrFixExclStage4.2_lvl3_ratio0.5/models/checkpoint_epoch_428_step_260000"
     LOSS_TYPE=mpjpe_millimeter     # l1, mpjpe
     BATCH_SIZE=64
 else
@@ -69,7 +69,7 @@ if [ "$mode" = "debug" ]; then
 elif [ "$mode" = "test" ]; then
         # -m debugpy --listen 5680 --wait-for-client \
         # accelerate launch --num_processes 5 \
-    CUDA_VISIBLE_DEVICES=3 \
+    CUDA_VISIBLE_DEVICES=2 \
         python \
         test_vqvae_new.py \
         --config ${CONFIG} \
