@@ -1,6 +1,6 @@
 # mode=debug
-mode=train
-# mode=test
+# mode=train
+mode=test
 
 EXP_NAME=joint_only/joint3d_image_affined_192x256/f64s1d64_cb4096x2048_mpjpe
 CONFIG=vqvae_experiment_configs/joint_only/joint3d_image_affined_192x256/f64s1d64_cb4096x2048_mpjpe/config.yaml
@@ -8,7 +8,7 @@ LOG=vqvae_experiment_configs/joint_only/joint3d_image_affined_192x256/f64s1d64_c
 
 
 if [ "$mode" = "test" ]; then
-    RESUME_PATH=""
+    RESUME_PATH="vqvae_experiment/joint_only/joint3d_image_affined_192x256/f64s1d64_cb4096x2048_mpjpe/models/checkpoint_epoch_240_step_180000"
     LOSS_TYPE=mpjpe_millimeter     # l1, mpjpe
     BATCH_SIZE=64
 else

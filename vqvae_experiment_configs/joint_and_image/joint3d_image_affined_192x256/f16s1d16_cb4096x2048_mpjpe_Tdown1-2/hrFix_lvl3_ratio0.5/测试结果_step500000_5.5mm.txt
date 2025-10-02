@@ -1,0 +1,34 @@
+(llama_factory) wxs@dbcloud:~/MTVCrafter$ sh vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/train.sh
+
+python test_vqvae_new.py --config vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/config.yaml --resume_pth vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/models/checkpoint_epoch_448_step_500000 --batch_size 64 --nb_code 4096 --codebook_dim 2048 --loss_type mpjpe_millimeter --vqvae_type hybrid --num_frames 16 --sample_stride 1 --data_stride 16 --data_mode joint3d --hrnet_output_level 3 --vision_guidance_ratio 0.5 --downsample_time [1,2] --frame_upsample_rate [2.0,1.0]
+Detected kernel version 5.4.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+Loading model...
+Loading model from vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb4096x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/models/checkpoint_epoch_448_step_500000/model.safetensors
+Loaded model with missing keys: []
+Loaded model with unexpected keys: []
+Model loaded successfully.
+Loading dataset...
+Dataset loaded with 32704 samples.
+
+
+--- Codebook Usage Statistics ---
+Total codes selected: 4447744
+Codebook size: 4096
+Number of activated codes: 4096 (100.00%)
+
+Top 5 most used codes:
+  - Code 223: used 4787 times
+  - Code 1737: used 4748 times
+  - Code 4035: used 4660 times
+  - Code 2607: used 4652 times
+  - Code 2182: used 4615 times
+
+Top 5 least used codes (among activated):
+  - Code 2621: used 2 times
+  - Code 3704: used 5 times
+  - Code 693: used 12 times
+  - Code 1342: used 16 times
+  - Code 406: used 17 times
+
+--- Test Results ---
+Average mpjpe_millimeter Reconstruction Loss: 5.491175

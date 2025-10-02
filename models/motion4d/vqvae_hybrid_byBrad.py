@@ -1,7 +1,9 @@
+import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+from safetensors.torch import load_file as load_safetensors
 
 from .vqvae import SMPL_VQVAE, ResBlock, Downsample, Encoder, Decoder, VectorQuantizer
 
@@ -84,6 +86,23 @@ class HYBRID_VQVAE(nn.Module):
                 downsample_time=encoder.downsample_time,
                 downsample_joint=[1, 1],
             )
+
+
+    def load_model_weights(self, weight_path):
+        safetensors_path = os.path.join(weight_path, "model.safetensors")
+        pytorch_bin_path = os.path.join(weight_path, "pytorch_model.bin")
+        if os.path.exists(safetensors_path):
+            print(f"Loading model from {safetensors_path}")
+            state_dict = load_safetensors(safetensors_path, device="cpu")
+        elif os.path.exists(pytorch_bin_path):
+            print(f"Loading model from {pytorch_bin_path}")
+            state_dict = torch.load(pytorch_bin_path, map_location="cpu")
+        else:
+            raise FileNotFoundError(f"Neither model.safetensors nor pytorch_model.bin found in {weight_path}")
+        self.load_state_dict(state_dict, strict=True)
+        return
+
+
     
     def to(self, device):
         self.encoder = self.encoder.to(device)
