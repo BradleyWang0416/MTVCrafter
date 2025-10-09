@@ -67,3 +67,13 @@ config.model.backbone.PRETRAINED_LAYERS = ['*']
 config.model.hybrid = edict()
 config.model.hybrid.hrnet_output_level = 3  # int or list. 0,1,2,3 分别对应输出 [B,32,H/4,W/4], [B,64,H/8,W/8], [B,128,H/16,W/16], [B,256,H/32,W/32] 的特征
 config.model.hybrid.vision_guidance_ratio = 0
+config.model.hybrid.vision_guidance_where = 'enc'
+config.model.hybrid.vision_guidance_fuse = 'cat'
+config.model.hybrid.vision_guidance_extraLoss = None    # infonce
+
+config.model.hybrid.vision_guidance_extraLossConfig = {
+    'infonce': {
+        'temperature': 0.07,
+        'loss_weight': 0.01,
+    }
+}

@@ -23,8 +23,10 @@ from models import HYBRID_VQVAE
 import sys
 sys.path.append("../Skeleton-in-Context-tpami/")
 from lib.utils.viz_skel_seq import viz_skel_seq_anim
+sys.path.remove("../Skeleton-in-Context-tpami/")
 sys.path.append("../ContextAwarePoseFormer_Private/H36M-Toolbox/")
 from multimodal_h36m_dataset_byBradley import Multimodal_Mocap_Dataset
+sys.path.remove("../ContextAwarePoseFormer_Private/H36M-Toolbox/")
 
 
 def update_dict(v, cfg):
@@ -100,13 +102,18 @@ def get_args():
     parser.add_argument('--get_item_list', type=str, default=None)
 
     # VISION BACKBONE config. 如果在命令行中指定，则覆盖vision_config中的配置
-    parser.add_argument('--hrnet_output_level', type=int, default=None, help="int or list. 0,1,2,3 分别对应输出 [B,32,H/4,W/4], [B,64,H/8,W/8], [B,128,H/16,W/16], [B,256,H/32,W/32] 的特征")
+    parser.add_argument('--hrnet_output_level', type=str, default=None, help="int or list. 0,1,2,3 分别对应输出 [B,32,H/4,W/4], [B,64,H/8,W/8], [B,128,H/16,W/16], [B,256,H/32,W/32] 的特征")
     parser.add_argument('--fix_weights', action='store_true')
     parser.add_argument('--fix_weights_except', type=str, default='PLACEHOLDERPLACEHOLDERPLACEHOLDER')
     parser.add_argument('--vision_guidance_ratio', type=float, default=None)
 
     parser.add_argument('--downsample_time', type=str, default=None)
     parser.add_argument('--frame_upsample_rate', type=str, default=None)
+
+    parser.add_argument('--vision_guidance_where', type=str, default=None)
+    parser.add_argument('--vision_guidance_fuse', type=str, default=None)
+    parser.add_argument('--vision_guidance_extraLoss', type=str, default=None)
+
     args = parser.parse_args()
 
     if isinstance(args.return_extra, str):
@@ -162,6 +169,8 @@ def train_vqvae(
     recon_loss = 0
     commit_loss = 0
     total_loss = 0
+    if args.vision_guidance_extraLoss is not None:
+        EXTRA_LOSS = 0
     total_preplexity = 0
     nb_iter = resume_iter
     epoch_start = resume_epoch
@@ -189,8 +198,13 @@ def train_vqvae(
                     logger.info(f'current_lr {current_lr:.6f} at iteration {nb_iter}')
 
 
-            recon_data, loss_commit, perplexity, gt_data = vqvae(batch)
+            tuple_return  = vqvae(batch)
             # [B,T,17,3]
+            if args.vision_guidance_extraLoss is not None:
+                recon_data, loss_commit, perplexity, gt_data, extra_loss = tuple_return
+            else:
+                recon_data, loss_commit, perplexity, gt_data = tuple_return
+
 
 
             if args.loss_type == 'l1':
@@ -203,6 +217,9 @@ def train_vqvae(
 
             reconstruction_loss = loss_fn(recon_data, gt_data)
             loss = reconstruction_loss + commit_ratio * loss_commit
+            if args.vision_guidance_extraLoss is not None:
+                loss = loss + extra_loss    # loss weight applied in forward
+                EXTRA_LOSS += extra_loss.item()
             recon_loss += reconstruction_loss.item()
             commit_loss += loss_commit.item()
             total_loss += loss.item()
@@ -217,8 +234,13 @@ def train_vqvae(
             torch.cuda.synchronize()
 
             if nb_iter % print_iter == 0 and accelerator.is_main_process:
-                logger.info(f'Stage: {stage} | Epoch: {epoch} | Iter: {nb_iter} | Total Loss: {(total_loss / print_iter):.6f} | Recon Loss: {(recon_loss / print_iter):.6f} | Commit Loss: {(commit_loss / print_iter):.6f} | Perplexity: {(total_preplexity / print_iter):.6f}')
-                total_loss, recon_loss, commit_loss, total_preplexity = 0, 0, 0, 0
+                if args.vision_guidance_extraLoss is not None:
+                    logger.info(f'Stage: {stage} | Epoch: {epoch} | Iter: {nb_iter} | Total Loss: {(total_loss / print_iter):.6f} | Recon Loss: {(recon_loss / print_iter):.6f} | Commit Loss: {(commit_loss / print_iter):.6f} | Perplexity: {(total_preplexity / print_iter):.6f} | {args.vision_guidance_extraLoss}: {(EXTRA_LOSS / print_iter):.6f}')
+                    total_loss, recon_loss, commit_loss, total_preplexity = 0, 0, 0, 0
+                    EXTRA_LOSS = 0
+                else:
+                    logger.info(f'Stage: {stage} | Epoch: {epoch} | Iter: {nb_iter} | Total Loss: {(total_loss / print_iter):.6f} | Recon Loss: {(recon_loss / print_iter):.6f} | Commit Loss: {(commit_loss / print_iter):.6f} | Perplexity: {(total_preplexity / print_iter):.6f}')
+                    total_loss, recon_loss, commit_loss, total_preplexity = 0, 0, 0, 0
             if nb_iter % save_interval == 0:
                 if accelerator.is_main_process:
                     logger.info('Saving model at iteration {}'.format(nb_iter))
@@ -346,6 +368,7 @@ if __name__ == '__main__':
                                         # dataloader config
                                         get_item_list=args.get_item_list,
                                         batch_return_type='tuple',
+                                        max_samples=512 if 'debugpy' in sys.modules else None,  # for debug
                                         )
     dataloader = torch.utils.data.DataLoader(
         dataset,
@@ -380,10 +403,18 @@ if __name__ == '__main__':
         vision_config.model.hybrid.hrnet_output_level = args.hrnet_output_level
     if args.get('vision_guidance_ratio', None) is not None:
         vision_config.model.hybrid.vision_guidance_ratio = args.vision_guidance_ratio
+    if args.get('vision_guidance_where', None) is not None:
+        vision_config.model.hybrid.vision_guidance_where = args.vision_guidance_where
+    if args.get('vision_guidance_fuse', None) is not None:
+        vision_config.model.hybrid.vision_guidance_fuse = args.vision_guidance_fuse
+    if args.get('vision_guidance_extraLoss', None) is not None:
+        vision_config.model.hybrid.vision_guidance_extraLoss = args.vision_guidance_extraLoss
+        
+
 
     vqvae = HYBRID_VQVAE(vqvae_config.encoder, vqvae_config.decoder, vqvae_config.vq, vision_config=vision_config, joint_data_type=args.joint_data_type).train()
     
-    if vision_config.model.hybrid.vision_guidance_ratio > 0:
+    if vision_config.model.hybrid.vision_guidance_ratio > 0 or vision_config.model.hybrid.vision_guidance_ratio == -1:
         if args.get('fix_weights', None) is not None:
             vision_config.model.backbone.fix_weights = args.fix_weights
         if vision_config.model.backbone.fix_weights:

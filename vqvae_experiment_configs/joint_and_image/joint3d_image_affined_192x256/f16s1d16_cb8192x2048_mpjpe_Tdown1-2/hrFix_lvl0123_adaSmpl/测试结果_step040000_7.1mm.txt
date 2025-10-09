@@ -1,0 +1,34 @@
+(llama_factory) wxs@dbcloud:~/MTVCrafter$ sh vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/train.sh
+
+python test_vqvae_new.py --config vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/config.yaml --resume_pth vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/models/checkpoint_epoch_27_step_40000 --batch_size 32 --nb_code 8192 --codebook_dim 2048 --loss_type mpjpe_millimeter --vqvae_type hybrid --num_frames 16 --sample_stride 1 --data_stride 16 --data_mode joint3d --hrnet_output_level [0,1,2,3] --vision_guidance_ratio 0.5 --downsample_time [1,2] --frame_upsample_rate [2.0,1.0] --vision_guidance_where enc --vision_guidance_fuse ada_sample
+Detected kernel version 5.4.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+Loading model...
+Loading model from vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/models/checkpoint_epoch_27_step_40000/model.safetensors
+Loaded model with missing keys: []
+Loaded model with unexpected keys: []
+Model loaded successfully.
+Loading dataset...
+Dataset loaded with 32704 samples.
+Testing: 100%|██████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1022/1022 [10:14<00:00,  1.66it/s]
+
+--- Codebook Usage Statistics ---
+Total codes selected: 4447744
+Codebook size: 8192
+Number of activated codes: 8106 (98.95%)
+
+Top 5 most used codes:
+  - Code 1366: used 6013 times
+  - Code 2757: used 4895 times
+  - Code 688: used 4871 times
+  - Code 497: used 4114 times
+  - Code 5708: used 3685 times
+
+Top 5 least used codes (among activated):
+  - Code 310: used 1 times
+  - Code 112: used 1 times
+  - Code 558: used 1 times
+  - Code 573: used 1 times
+  - Code 233: used 1 times
+
+--- Test Results ---
+Average mpjpe_millimeter Reconstruction Loss: 7.131500

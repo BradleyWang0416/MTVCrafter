@@ -1,0 +1,34 @@
+(llama_factory) wxs@dbcloud:~/MTVCrafter$ sh vqvae_experiment_configs/MultiDatasets/Amass_H36m/joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb8192x3072_mpjpe_Tdown1-2/train.sh
+
+python test_vqvae_new.py --config vqvae_experiment_configs/MultiDatasets/Amass_H36m/joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb8192x3072_mpjpe_Tdown1-2/config.yaml --resume_pth vqvae_experiment/MultiDatasets/Amass_H36m/joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb8192x3072_mpjpe_Tdown1-2/models/checkpoint_epoch_73_step_500000 --batch_size 64 --nb_code 8192 --codebook_dim 3072 --loss_type mpjpe_millimeter --vqvae_type hybrid --num_frames 16 --sample_stride 1 --data_stride 16 --data_mode null --hrnet_output_level 3 --vision_guidance_ratio 0 --joint_data_type joint3d_cam_rootrel_meter --downsample_time [1,2] --frame_upsample_rate [2.0,1.0]
+Detected kernel version 5.4.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+Loading model...
+Loading model from vqvae_experiment/MultiDatasets/Amass_H36m/joint_only/joint3d_cam_rootrel_meter/f16s1d16_cb8192x3072_mpjpe_Tdown1-2/models/checkpoint_epoch_73_step_500000/model.safetensors
+Loaded model with missing keys: []
+Loaded model with unexpected keys: []
+Model loaded successfully.
+Loading dataset...
+Dataset loaded with 147438 samples.
+
+
+--- Codebook Usage Statistics ---
+Total codes selected: 20051568
+Codebook size: 8192
+Number of activated codes: 3152 (38.48%)
+
+Top 5 most used codes:
+  - Code 2629: used 25313 times
+  - Code 3441: used 23787 times
+  - Code 7015: used 21376 times
+  - Code 4848: used 21326 times
+  - Code 4504: used 21292 times
+
+Top 5 least used codes (among activated):
+  - Code 400: used 1 times
+  - Code 3284: used 1 times
+  - Code 6306: used 1 times
+  - Code 4324: used 1 times
+  - Code 744: used 2 times
+
+--- Test Results ---
+Average mpjpe_millimeter Reconstruction Loss: 3.990460

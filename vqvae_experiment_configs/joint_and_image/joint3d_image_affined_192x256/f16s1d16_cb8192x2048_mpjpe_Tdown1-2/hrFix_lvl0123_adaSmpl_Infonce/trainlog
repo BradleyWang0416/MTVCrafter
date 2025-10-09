@@ -1,0 +1,394 @@
+The following values were not passed to `accelerate launch` and had defaults used instead:
+		More than one GPU was found, enabling multi-GPU training.
+		If this was unintended please pass in `--num_processes=1`.
+	`--num_machines` was set to a value of `1`
+	`--mixed_precision` was set to a value of `'no'`
+	`--dynamo_backend` was set to a value of `'no'`
+To avoid this warning pass in values for each of the problematic parameters or run `accelerate config`.
+/home/wxs/anaconda3/envs/llama_factory/lib/python3.10/site-packages/accelerate/accelerator.py:498: UserWarning: `log_with=tensorboard` was passed but no supported trackers are currently installed.
+  warnings.warn(f"`log_with={log_with}` was passed but no supported trackers are currently installed.")
+/home/wxs/anaconda3/envs/llama_factory/lib/python3.10/site-packages/accelerate/accelerator.py:498: UserWarning: `log_with=tensorboard` was passed but no supported trackers are currently installed.
+  warnings.warn(f"`log_with={log_with}` was passed but no supported trackers are currently installed.")
+Detected kernel version 5.4.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+2025-10-08 10:49:34,490 
+python train_vqvae_new.py --batch_size 48 --config vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce/config.yaml --data_mode joint3d --num_frames 16 --sample_stride 1 --data_stride 16 --project_dir vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce --not_find_unused_parameters --nb_code 8192 --codebook_dim 2048 --loss_type mpjpe --vqvae_type hybrid --hrnet_output_level [0,1,2,3] --vision_guidance_ratio 0.5 --downsample_time [1,2] --frame_upsample_rate [2.0,1.0] --fix_weights --resume_pth  --vision_guidance_where enc --vision_guidance_fuse ada_sample --vision_guidance_extraLoss infonce
+2025-10-08 10:49:34,490 
+PID: 3827697
+2025-10-08 10:51:14,953 Data loaded with 97196 samples
+vision backbone weights are fixed
+vision backbone weights are fixed
+2025-10-08 10:51:16,174 Trainable parameters: 179,398,051
+2025-10-08 10:51:16,174 Non-trainable parameters: 28,535,552
+Trainning Epoch:   0%|          | 0/494 [00:00<?, ?it/s]2025-10-08 10:51:17,555 Number of trainable parameters: 179.398051 M
+2025-10-08 10:51:17,555 Args: {'num_frames': 16, 'sample_stride': 1, 'data_stride': 16, 'data_mode': 'joint3d', 'load_data_file': '/data2/wxs/DATASETS/Human3.6M_for_MotionBERT/h36m_sh_conf_cam_source_final_wImgPath_wJ3dCam_wJ2dCpn.pkl', 'load_image_source_file': '/data2/wxs/DATASETS/Human3.6M_for_MotionBERT/images_source.pkl', 'load_bbox_file': '/data2/wxs/DATASETS/Human3.6M_for_MotionBERT/bboxes_xyxy.pkl', 'load_text_source_file': '', 'return_extra': [['image']], 'normalize': 'anisotropic', 'filter_invalid_images': True, 'processed_image_shape': [192, 256], 'backbone': 'hrnet_32', 'get_item_list': ['factor_2_5d', 'video_rgb', 'joint3d_image_affined', 'joint3d_image_affined_normed', 'joint3d_image_affined_scale', 'joint3d_image_affined_transl', 'affine_trans', 'affine_trans_inv', 'joint_2_5d_image'], 'config': 'vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce/config.yaml', 'resume_pth': '', 'batch_size': 48, 'commit_ratio': 0.5, 'nb_code': 8192, 'codebook_dim': 2048, 'max_epoch': 1000000000.0, 'total_iter': 500000, 'world_size': 1, 'rank': 0, 'save_interval': 20000, 'warm_up_iter': 5000, 'print_iter': 200, 'learning_rate': 0.0002, 'lr_schedule': [300000], 'gamma': 0.05, 'weight_decay': 0.0001, 'device': 'cuda', 'project_config': '', 'allow_tf32': False, 'project_dir': 'vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce', 'seed': 6666, 'not_find_unused_parameters': True, 'loss_type': 'mpjpe', 'vqvae_type': 'hybrid', 'joint_data_type': 'joint3d_image_affined_normed', 'hrnet_output_level': [0, 1, 2, 3], 'fix_weights': True, 'fix_weights_except': 'PLACEHOLDERPLACEHOLDERPLACEHOLDER', 'vision_guidance_ratio': 0.5, 'downsample_time': [1, 2], 'frame_upsample_rate': [2.0, 1.0], 'vision_guidance_where': 'enc', 'vision_guidance_fuse': 'ada_sample', 'vision_guidance_extraLoss': 'infonce'}
+Trainning Epoch:   0%|          | 0/494 [00:00<?, ?it/s]2025-10-08 10:55:11,499 current_lr 0.000008 at iteration 200
+2025-10-08 10:55:12,480 Stage: Warm Up | Epoch: 0 | Iter: 200 | Total Loss: 0.214316 | Recon Loss: 0.168440 | Commit Loss: 0.014716 | Perplexity: 458.933688 | infonce: 0.038518
+2025-10-08 10:59:01,452 current_lr 0.000016 at iteration 400
+2025-10-08 10:59:02,474 Stage: Warm Up | Epoch: 0 | Iter: 400 | Total Loss: 0.141896 | Recon Loss: 0.085195 | Commit Loss: 0.050678 | Perplexity: 482.365577 | infonce: 0.031362
+2025-10-08 11:02:53,549 current_lr 0.000024 at iteration 600
+2025-10-08 11:02:54,547 Stage: Warm Up | Epoch: 0 | Iter: 600 | Total Loss: 0.105671 | Recon Loss: 0.055583 | Commit Loss: 0.065956 | Perplexity: 761.271885 | infonce: 0.017110
+2025-10-08 11:06:43,611 current_lr 0.000032 at iteration 800
+2025-10-08 11:06:44,597 Stage: Warm Up | Epoch: 0 | Iter: 800 | Total Loss: 0.090958 | Recon Loss: 0.047041 | Commit Loss: 0.070104 | Perplexity: 884.466809 | infonce: 0.008865
+2025-10-08 11:10:33,264 current_lr 0.000040 at iteration 1000
+2025-10-08 11:10:34,244 Stage: Warm Up | Epoch: 0 | Iter: 1000 | Total Loss: 0.084182 | Recon Loss: 0.043347 | Commit Loss: 0.070016 | Perplexity: 912.931344 | infonce: 0.005827
+Trainning Epoch:   0%|          | 1/494 [19:31<160:27:04, 1171.65s/it]Trainning Epoch:   0%|          | 1/494 [19:31<160:26:56, 1171.64s/it]2025-10-08 11:14:29,961 current_lr 0.000048 at iteration 1200
+2025-10-08 11:14:30,951 Stage: Warm Up | Epoch: 1 | Iter: 1200 | Total Loss: 0.077819 | Recon Loss: 0.040566 | Commit Loss: 0.065775 | Perplexity: 913.152589 | infonce: 0.004366
+2025-10-08 11:18:22,732 current_lr 0.000056 at iteration 1400
+2025-10-08 11:18:23,714 Stage: Warm Up | Epoch: 1 | Iter: 1400 | Total Loss: 0.072213 | Recon Loss: 0.038514 | Commit Loss: 0.060661 | Perplexity: 904.188660 | infonce: 0.003369
+2025-10-08 11:22:16,948 current_lr 0.000064 at iteration 1600
+2025-10-08 11:22:17,960 Stage: Warm Up | Epoch: 1 | Iter: 1600 | Total Loss: 0.066469 | Recon Loss: 0.036629 | Commit Loss: 0.054177 | Perplexity: 895.708715 | infonce: 0.002751
+2025-10-08 11:26:10,445 current_lr 0.000072 at iteration 1800
+2025-10-08 11:26:11,433 Stage: Warm Up | Epoch: 1 | Iter: 1800 | Total Loss: 0.061079 | Recon Loss: 0.034705 | Commit Loss: 0.047864 | Perplexity: 868.847589 | infonce: 0.002442
+2025-10-08 11:30:03,596 current_lr 0.000080 at iteration 2000
+2025-10-08 11:30:04,584 Stage: Warm Up | Epoch: 1 | Iter: 2000 | Total Loss: 0.056934 | Recon Loss: 0.033546 | Commit Loss: 0.042516 | Perplexity: 832.724258 | infonce: 0.002130
+Trainning Epoch:   0%|          | 2/494 [39:17<161:15:23, 1179.93s/it]Trainning Epoch:   0%|          | 2/494 [39:17<161:15:20, 1179.92s/it]2025-10-08 11:33:57,366 current_lr 0.000088 at iteration 2200
+2025-10-08 11:33:58,352 Stage: Warm Up | Epoch: 2 | Iter: 2200 | Total Loss: 0.053539 | Recon Loss: 0.032650 | Commit Loss: 0.037851 | Perplexity: 801.554488 | infonce: 0.001963
+2025-10-08 11:37:47,480 current_lr 0.000096 at iteration 2400
+2025-10-08 11:37:48,467 Stage: Warm Up | Epoch: 2 | Iter: 2400 | Total Loss: 0.050678 | Recon Loss: 0.031852 | Commit Loss: 0.033968 | Perplexity: 773.145879 | infonce: 0.001842
+2025-10-08 11:41:36,535 current_lr 0.000104 at iteration 2600
+2025-10-08 11:41:37,526 Stage: Warm Up | Epoch: 2 | Iter: 2600 | Total Loss: 0.047444 | Recon Loss: 0.030421 | Commit Loss: 0.030473 | Perplexity: 753.503390 | infonce: 0.001787
+2025-10-08 11:45:25,143 current_lr 0.000112 at iteration 2800
+2025-10-08 11:45:26,159 Stage: Warm Up | Epoch: 2 | Iter: 2800 | Total Loss: 0.044088 | Recon Loss: 0.028794 | Commit Loss: 0.027383 | Perplexity: 740.733668 | infonce: 0.001602
+2025-10-08 11:49:13,511 current_lr 0.000120 at iteration 3000
+2025-10-08 11:49:14,529 Stage: Warm Up | Epoch: 2 | Iter: 3000 | Total Loss: 0.041776 | Recon Loss: 0.027978 | Commit Loss: 0.024423 | Perplexity: 736.150799 | infonce: 0.001586
+Trainning Epoch:   1%|          | 3/494 [58:41<159:56:41, 1172.71s/it]Trainning Epoch:   1%|          | 3/494 [58:41<159:56:39, 1172.71s/it]2025-10-08 11:53:08,816 current_lr 0.000128 at iteration 3200
+2025-10-08 11:53:09,839 Stage: Warm Up | Epoch: 3 | Iter: 3200 | Total Loss: 0.039424 | Recon Loss: 0.026908 | Commit Loss: 0.022181 | Perplexity: 738.083731 | infonce: 0.001426
+2025-10-08 11:57:03,668 current_lr 0.000136 at iteration 3400
+2025-10-08 11:57:04,688 Stage: Warm Up | Epoch: 3 | Iter: 3400 | Total Loss: 0.037379 | Recon Loss: 0.025969 | Commit Loss: 0.020168 | Perplexity: 746.574794 | infonce: 0.001327
+2025-10-08 12:00:56,965 current_lr 0.000144 at iteration 3600
+2025-10-08 12:00:57,951 Stage: Warm Up | Epoch: 3 | Iter: 3600 | Total Loss: 0.035744 | Recon Loss: 0.025421 | Commit Loss: 0.018050 | Perplexity: 753.211279 | infonce: 0.001298
+2025-10-08 12:04:50,009 current_lr 0.000152 at iteration 3800
+2025-10-08 12:04:50,992 Stage: Warm Up | Epoch: 3 | Iter: 3800 | Total Loss: 0.033927 | Recon Loss: 0.024164 | Commit Loss: 0.016980 | Perplexity: 770.347543 | infonce: 0.001273
+2025-10-08 12:08:42,668 current_lr 0.000160 at iteration 4000
+2025-10-08 12:08:43,652 Stage: Warm Up | Epoch: 3 | Iter: 4000 | Total Loss: 0.032576 | Recon Loss: 0.023553 | Commit Loss: 0.015562 | Perplexity: 778.909028 | infonce: 0.001242
+Trainning Epoch:   1%|          | 4/494 [1:18:26<160:16:16, 1177.50s/it]Trainning Epoch:   1%|          | 4/494 [1:18:26<160:16:15, 1177.50s/it]2025-10-08 12:12:39,428 current_lr 0.000168 at iteration 4200
+2025-10-08 12:12:40,411 Stage: Warm Up | Epoch: 4 | Iter: 4200 | Total Loss: 0.031390 | Recon Loss: 0.023097 | Commit Loss: 0.014216 | Perplexity: 784.483085 | infonce: 0.001185
+2025-10-08 12:16:34,321 current_lr 0.000176 at iteration 4400
+2025-10-08 12:16:35,309 Stage: Warm Up | Epoch: 4 | Iter: 4400 | Total Loss: 0.030139 | Recon Loss: 0.022331 | Commit Loss: 0.013281 | Perplexity: 793.811141 | infonce: 0.001167
+2025-10-08 12:20:29,809 current_lr 0.000184 at iteration 4600
+2025-10-08 12:20:30,821 Stage: Warm Up | Epoch: 4 | Iter: 4600 | Total Loss: 0.028769 | Recon Loss: 0.021440 | Commit Loss: 0.012492 | Perplexity: 808.817118 | infonce: 0.001083
+2025-10-08 12:24:25,252 current_lr 0.000192 at iteration 4800
+2025-10-08 12:24:26,248 Stage: Warm Up | Epoch: 4 | Iter: 4800 | Total Loss: 0.028318 | Recon Loss: 0.021339 | Commit Loss: 0.011612 | Perplexity: 811.541689 | infonce: 0.001174
+2025-10-08 12:28:19,582 current_lr 0.000200 at iteration 5000
+2025-10-08 12:28:20,572 Stage: Warm Up | Epoch: 4 | Iter: 5000 | Total Loss: 0.027301 | Recon Loss: 0.020846 | Commit Loss: 0.010941 | Perplexity: 826.381194 | infonce: 0.000984
+Trainning Epoch:   1%|          | 5/494 [1:38:18<160:39:55, 1182.81s/it]Trainning Epoch:   1%|          | 5/494 [1:38:18<160:39:54, 1182.81s/it]2025-10-08 12:32:14,629 Stage: Train 0.5 | Epoch: 5 | Iter: 5200 | Total Loss: 0.026237 | Recon Loss: 0.019878 | Commit Loss: 0.010627 | Perplexity: 827.968915 | infonce: 0.001046
+2025-10-08 12:36:03,288 Stage: Train 0.5 | Epoch: 5 | Iter: 5400 | Total Loss: 0.025462 | Recon Loss: 0.019517 | Commit Loss: 0.010066 | Perplexity: 833.618526 | infonce: 0.000912
+2025-10-08 12:39:51,535 Stage: Train 0.5 | Epoch: 5 | Iter: 5600 | Total Loss: 0.024860 | Recon Loss: 0.018942 | Commit Loss: 0.009969 | Perplexity: 840.788812 | infonce: 0.000934
+2025-10-08 12:43:39,469 Stage: Train 0.5 | Epoch: 5 | Iter: 5800 | Total Loss: 0.024032 | Recon Loss: 0.018181 | Commit Loss: 0.009947 | Perplexity: 849.463590 | infonce: 0.000878
+2025-10-08 12:47:29,112 Stage: Train 0.5 | Epoch: 5 | Iter: 6000 | Total Loss: 0.023753 | Recon Loss: 0.017997 | Commit Loss: 0.009731 | Perplexity: 857.763441 | infonce: 0.000890
+Trainning Epoch:   1%|          | 6/494 [1:57:40<159:22:59, 1175.78s/it]Trainning Epoch:   1%|          | 6/494 [1:57:40<159:22:58, 1175.78s/it]2025-10-08 12:51:22,609 Stage: Train 0.5 | Epoch: 6 | Iter: 6200 | Total Loss: 0.023306 | Recon Loss: 0.017644 | Commit Loss: 0.009537 | Perplexity: 859.658475 | infonce: 0.000894
+2025-10-08 12:55:13,212 Stage: Train 0.5 | Epoch: 6 | Iter: 6400 | Total Loss: 0.022661 | Recon Loss: 0.017206 | Commit Loss: 0.009282 | Perplexity: 867.701389 | infonce: 0.000814
+2025-10-08 12:59:03,087 Stage: Train 0.5 | Epoch: 6 | Iter: 6600 | Total Loss: 0.022404 | Recon Loss: 0.016996 | Commit Loss: 0.009211 | Perplexity: 874.700546 | infonce: 0.000803
+2025-10-08 13:02:53,189 Stage: Train 0.5 | Epoch: 6 | Iter: 6800 | Total Loss: 0.021885 | Recon Loss: 0.016572 | Commit Loss: 0.009056 | Perplexity: 877.327980 | infonce: 0.000786
+2025-10-08 13:06:43,020 Stage: Train 0.5 | Epoch: 6 | Iter: 7000 | Total Loss: 0.021308 | Recon Loss: 0.016033 | Commit Loss: 0.009013 | Perplexity: 886.711021 | infonce: 0.000769
+Trainning Epoch:   1%|▏         | 7/494 [2:17:10<158:46:38, 1173.71s/it]Trainning Epoch:   1%|▏         | 7/494 [2:17:10<158:46:38, 1173.71s/it]2025-10-08 13:10:38,188 Stage: Train 0.5 | Epoch: 7 | Iter: 7200 | Total Loss: 0.021233 | Recon Loss: 0.016068 | Commit Loss: 0.008805 | Perplexity: 887.726767 | infonce: 0.000763
+2025-10-08 13:14:30,743 Stage: Train 0.5 | Epoch: 7 | Iter: 7400 | Total Loss: 0.020524 | Recon Loss: 0.015483 | Commit Loss: 0.008655 | Perplexity: 889.968813 | infonce: 0.000714
+2025-10-08 13:18:23,050 Stage: Train 0.5 | Epoch: 7 | Iter: 7600 | Total Loss: 0.020367 | Recon Loss: 0.015416 | Commit Loss: 0.008502 | Perplexity: 895.607455 | infonce: 0.000701
+2025-10-08 13:22:13,499 Stage: Train 0.5 | Epoch: 7 | Iter: 7800 | Total Loss: 0.019859 | Recon Loss: 0.014936 | Commit Loss: 0.008461 | Perplexity: 901.933624 | infonce: 0.000693
+2025-10-08 13:26:03,287 Stage: Train 0.5 | Epoch: 7 | Iter: 8000 | Total Loss: 0.019748 | Recon Loss: 0.014890 | Commit Loss: 0.008329 | Perplexity: 900.248132 | infonce: 0.000693
+Trainning Epoch:   2%|▏         | 8/494 [2:36:45<158:31:22, 1174.24s/it]Trainning Epoch:   2%|▏         | 8/494 [2:36:45<158:31:22, 1174.24s/it]2025-10-08 13:29:58,672 Stage: Train 0.5 | Epoch: 8 | Iter: 8200 | Total Loss: 0.019444 | Recon Loss: 0.014656 | Commit Loss: 0.008203 | Perplexity: 906.242607 | infonce: 0.000687
+2025-10-08 13:33:51,427 Stage: Train 0.5 | Epoch: 8 | Iter: 8400 | Total Loss: 0.019006 | Recon Loss: 0.014299 | Commit Loss: 0.008136 | Perplexity: 911.130919 | infonce: 0.000640
+2025-10-08 13:37:43,171 Stage: Train 0.5 | Epoch: 8 | Iter: 8600 | Total Loss: 0.018784 | Recon Loss: 0.014132 | Commit Loss: 0.007977 | Perplexity: 906.042198 | infonce: 0.000664
+2025-10-08 13:41:33,173 Stage: Train 0.5 | Epoch: 8 | Iter: 8800 | Total Loss: 0.018463 | Recon Loss: 0.013969 | Commit Loss: 0.007716 | Perplexity: 908.154784 | infonce: 0.000636
+2025-10-08 13:45:22,854 Stage: Train 0.5 | Epoch: 8 | Iter: 9000 | Total Loss: 0.018085 | Recon Loss: 0.013608 | Commit Loss: 0.007728 | Perplexity: 912.852505 | infonce: 0.000613
+Trainning Epoch:   2%|▏         | 9/494 [2:56:19<158:10:49, 1174.12s/it]Trainning Epoch:   2%|▏         | 9/494 [2:56:19<158:10:50, 1174.12s/it]2025-10-08 13:49:15,580 Stage: Train 0.5 | Epoch: 9 | Iter: 9200 | Total Loss: 0.018296 | Recon Loss: 0.013888 | Commit Loss: 0.007570 | Perplexity: 915.863140 | infonce: 0.000623
+2025-10-08 13:53:05,038 Stage: Train 0.5 | Epoch: 9 | Iter: 9400 | Total Loss: 0.017681 | Recon Loss: 0.013327 | Commit Loss: 0.007533 | Perplexity: 916.779396 | infonce: 0.000588
+2025-10-08 13:56:53,770 Stage: Train 0.5 | Epoch: 9 | Iter: 9600 | Total Loss: 0.017448 | Recon Loss: 0.013181 | Commit Loss: 0.007339 | Perplexity: 919.193678 | infonce: 0.000598
+2025-10-08 14:00:42,545 Stage: Train 0.5 | Epoch: 9 | Iter: 9800 | Total Loss: 0.017428 | Recon Loss: 0.013197 | Commit Loss: 0.007272 | Perplexity: 922.142375 | infonce: 0.000594
+2025-10-08 14:04:31,239 Stage: Train 0.5 | Epoch: 9 | Iter: 10000 | Total Loss: 0.017031 | Recon Loss: 0.012852 | Commit Loss: 0.007223 | Perplexity: 918.146220 | infonce: 0.000568
+Trainning Epoch:   2%|▏         | 10/494 [3:15:42<157:24:09, 1170.76s/it]Trainning Epoch:   2%|▏         | 10/494 [3:15:42<157:24:09, 1170.76s/it]2025-10-08 14:08:24,899 Stage: Train 0.5 | Epoch: 10 | Iter: 10200 | Total Loss: 0.017047 | Recon Loss: 0.012969 | Commit Loss: 0.007027 | Perplexity: 914.266126 | infonce: 0.000565
+2025-10-08 14:12:14,654 Stage: Train 0.5 | Epoch: 10 | Iter: 10400 | Total Loss: 0.016608 | Recon Loss: 0.012563 | Commit Loss: 0.006959 | Perplexity: 915.522096 | infonce: 0.000565
+2025-10-08 14:16:03,598 Stage: Train 0.5 | Epoch: 10 | Iter: 10600 | Total Loss: 0.016186 | Recon Loss: 0.012205 | Commit Loss: 0.006857 | Perplexity: 915.543304 | infonce: 0.000552
+2025-10-08 14:19:53,106 Stage: Train 0.5 | Epoch: 10 | Iter: 10800 | Total Loss: 0.016232 | Recon Loss: 0.012293 | Commit Loss: 0.006768 | Perplexity: 914.267713 | infonce: 0.000555
+2025-10-08 14:23:42,560 Stage: Train 0.5 | Epoch: 10 | Iter: 11000 | Total Loss: 0.015984 | Recon Loss: 0.012186 | Commit Loss: 0.006525 | Perplexity: 906.476829 | infonce: 0.000536
+Trainning Epoch:   2%|▏         | 11/494 [3:35:09<156:55:02, 1169.57s/it]Trainning Epoch:   2%|▏         | 11/494 [3:35:09<156:55:02, 1169.57s/it]2025-10-08 14:27:36,880 Stage: Train 0.5 | Epoch: 11 | Iter: 11200 | Total Loss: 0.015636 | Recon Loss: 0.011876 | Commit Loss: 0.006440 | Perplexity: 905.440863 | infonce: 0.000540
+2025-10-08 14:31:26,473 Stage: Train 0.5 | Epoch: 11 | Iter: 11400 | Total Loss: 0.015261 | Recon Loss: 0.011619 | Commit Loss: 0.006304 | Perplexity: 902.756188 | infonce: 0.000490
+2025-10-08 14:35:14,879 Stage: Train 0.5 | Epoch: 11 | Iter: 11600 | Total Loss: 0.015121 | Recon Loss: 0.011501 | Commit Loss: 0.006161 | Perplexity: 904.951176 | infonce: 0.000539
+2025-10-08 14:39:03,146 Stage: Train 0.5 | Epoch: 11 | Iter: 11800 | Total Loss: 0.014841 | Recon Loss: 0.011351 | Commit Loss: 0.006005 | Perplexity: 904.487389 | infonce: 0.000488
+2025-10-08 14:42:52,444 Stage: Train 0.5 | Epoch: 11 | Iter: 12000 | Total Loss: 0.014724 | Recon Loss: 0.011371 | Commit Loss: 0.005781 | Perplexity: 899.366986 | infonce: 0.000463
+Trainning Epoch:   2%|▏         | 12/494 [3:54:33<156:21:17, 1167.80s/it]Trainning Epoch:   2%|▏         | 12/494 [3:54:33<156:21:17, 1167.80s/it]2025-10-08 14:46:45,877 Stage: Train 0.5 | Epoch: 12 | Iter: 12200 | Total Loss: 0.014459 | Recon Loss: 0.011163 | Commit Loss: 0.005644 | Perplexity: 896.822371 | infonce: 0.000474
+2025-10-08 14:50:37,408 Stage: Train 0.5 | Epoch: 12 | Iter: 12400 | Total Loss: 0.014246 | Recon Loss: 0.010944 | Commit Loss: 0.005660 | Perplexity: 896.281685 | infonce: 0.000473
+2025-10-08 14:54:28,781 Stage: Train 0.5 | Epoch: 12 | Iter: 12600 | Total Loss: 0.014176 | Recon Loss: 0.010978 | Commit Loss: 0.005474 | Perplexity: 894.764048 | infonce: 0.000461
+2025-10-08 14:58:21,199 Stage: Train 0.5 | Epoch: 12 | Iter: 12800 | Total Loss: 0.013972 | Recon Loss: 0.010777 | Commit Loss: 0.005460 | Perplexity: 888.756376 | infonce: 0.000464
+2025-10-08 15:02:13,039 Stage: Train 0.5 | Epoch: 12 | Iter: 13000 | Total Loss: 0.013766 | Recon Loss: 0.010702 | Commit Loss: 0.005249 | Perplexity: 882.514794 | infonce: 0.000440
+Trainning Epoch:   3%|▎         | 13/494 [4:14:11<156:27:21, 1170.98s/it]Trainning Epoch:   3%|▎         | 13/494 [4:14:11<156:27:21, 1170.98s/it]2025-10-08 15:06:09,329 Stage: Train 0.5 | Epoch: 13 | Iter: 13200 | Total Loss: 0.013862 | Recon Loss: 0.010697 | Commit Loss: 0.005361 | Perplexity: 885.796380 | infonce: 0.000484
+2025-10-08 15:10:00,811 Stage: Train 0.5 | Epoch: 13 | Iter: 13400 | Total Loss: 0.013467 | Recon Loss: 0.010386 | Commit Loss: 0.005278 | Perplexity: 882.843640 | infonce: 0.000442
+2025-10-08 15:13:51,514 Stage: Train 0.5 | Epoch: 13 | Iter: 13600 | Total Loss: 0.013388 | Recon Loss: 0.010392 | Commit Loss: 0.005138 | Perplexity: 884.272651 | infonce: 0.000427
+2025-10-08 15:17:42,758 Stage: Train 0.5 | Epoch: 13 | Iter: 13800 | Total Loss: 0.013195 | Recon Loss: 0.010212 | Commit Loss: 0.005099 | Perplexity: 886.236136 | infonce: 0.000434
+2025-10-08 15:21:34,192 Stage: Train 0.5 | Epoch: 13 | Iter: 14000 | Total Loss: 0.013142 | Recon Loss: 0.010202 | Commit Loss: 0.005024 | Perplexity: 890.492114 | infonce: 0.000427
+Trainning Epoch:   3%|▎         | 14/494 [4:33:47<156:18:50, 1172.35s/it]Trainning Epoch:   3%|▎         | 14/494 [4:33:47<156:18:56, 1172.37s/it]2025-10-08 15:25:29,618 Stage: Train 0.5 | Epoch: 14 | Iter: 14200 | Total Loss: 0.012858 | Recon Loss: 0.009986 | Commit Loss: 0.004915 | Perplexity: 885.732041 | infonce: 0.000414
+2025-10-08 15:29:20,875 Stage: Train 0.5 | Epoch: 14 | Iter: 14400 | Total Loss: 0.012814 | Recon Loss: 0.009937 | Commit Loss: 0.004915 | Perplexity: 892.075686 | infonce: 0.000419
+2025-10-08 15:33:13,050 Stage: Train 0.5 | Epoch: 14 | Iter: 14600 | Total Loss: 0.012754 | Recon Loss: 0.009924 | Commit Loss: 0.004835 | Perplexity: 892.507302 | infonce: 0.000412
+2025-10-08 15:37:04,301 Stage: Train 0.5 | Epoch: 14 | Iter: 14800 | Total Loss: 0.012608 | Recon Loss: 0.009823 | Commit Loss: 0.004779 | Perplexity: 890.523456 | infonce: 0.000396
+2025-10-08 15:40:55,994 Stage: Train 0.5 | Epoch: 14 | Iter: 15000 | Total Loss: 0.012728 | Recon Loss: 0.009915 | Commit Loss: 0.004811 | Perplexity: 897.677976 | infonce: 0.000408
+Trainning Epoch:   3%|▎         | 15/494 [4:53:22<156:07:48, 1173.42s/it]Trainning Epoch:   3%|▎         | 15/494 [4:53:23<156:07:53, 1173.43s/it]2025-10-08 15:44:50,074 Stage: Train 0.5 | Epoch: 15 | Iter: 15200 | Total Loss: 0.012446 | Recon Loss: 0.009723 | Commit Loss: 0.004680 | Perplexity: 892.505950 | infonce: 0.000383
+2025-10-08 15:48:40,099 Stage: Train 0.5 | Epoch: 15 | Iter: 15400 | Total Loss: 0.012307 | Recon Loss: 0.009595 | Commit Loss: 0.004666 | Perplexity: 894.519438 | infonce: 0.000378
+2025-10-08 15:52:29,713 Stage: Train 0.5 | Epoch: 15 | Iter: 15600 | Total Loss: 0.012106 | Recon Loss: 0.009471 | Commit Loss: 0.004552 | Perplexity: 891.684833 | infonce: 0.000360
+2025-10-08 15:56:19,322 Stage: Train 0.5 | Epoch: 15 | Iter: 15800 | Total Loss: 0.012282 | Recon Loss: 0.009585 | Commit Loss: 0.004643 | Perplexity: 899.673073 | infonce: 0.000375
+2025-10-08 16:00:08,178 Stage: Train 0.5 | Epoch: 15 | Iter: 16000 | Total Loss: 0.012080 | Recon Loss: 0.009420 | Commit Loss: 0.004549 | Perplexity: 897.211476 | infonce: 0.000385
+2025-10-08 16:03:56,443 Stage: Train 0.5 | Epoch: 15 | Iter: 16200 | Total Loss: 0.011969 | Recon Loss: 0.009348 | Commit Loss: 0.004535 | Perplexity: 898.146855 | infonce: 0.000353
+Trainning Epoch:   3%|▎         | 16/494 [5:12:47<155:27:55, 1170.87s/it]Trainning Epoch:   3%|▎         | 16/494 [5:12:47<155:27:58, 1170.88s/it]2025-10-08 16:07:49,403 Stage: Train 0.5 | Epoch: 16 | Iter: 16400 | Total Loss: 0.012003 | Recon Loss: 0.009448 | Commit Loss: 0.004405 | Perplexity: 895.643503 | infonce: 0.000352
+2025-10-08 16:11:38,627 Stage: Train 0.5 | Epoch: 16 | Iter: 16600 | Total Loss: 0.011752 | Recon Loss: 0.009174 | Commit Loss: 0.004438 | Perplexity: 897.826530 | infonce: 0.000359
+2025-10-08 16:15:27,987 Stage: Train 0.5 | Epoch: 16 | Iter: 16800 | Total Loss: 0.011791 | Recon Loss: 0.009232 | Commit Loss: 0.004399 | Perplexity: 900.295462 | infonce: 0.000359
+2025-10-08 16:19:16,525 Stage: Train 0.5 | Epoch: 16 | Iter: 17000 | Total Loss: 0.011786 | Recon Loss: 0.009244 | Commit Loss: 0.004356 | Perplexity: 902.415857 | infonce: 0.000364
+2025-10-08 16:23:05,751 Stage: Train 0.5 | Epoch: 16 | Iter: 17200 | Total Loss: 0.011704 | Recon Loss: 0.009177 | Commit Loss: 0.004379 | Perplexity: 902.866839 | infonce: 0.000338
+Trainning Epoch:   3%|▎         | 17/494 [5:32:12<154:52:26, 1168.86s/it]Trainning Epoch:   3%|▎         | 17/494 [5:32:12<154:52:25, 1168.86s/it]2025-10-08 16:26:58,010 Stage: Train 0.5 | Epoch: 17 | Iter: 17400 | Total Loss: 0.011631 | Recon Loss: 0.009124 | Commit Loss: 0.004307 | Perplexity: 901.474800 | infonce: 0.000353
+2025-10-08 16:30:46,282 Stage: Train 0.5 | Epoch: 17 | Iter: 17600 | Total Loss: 0.011658 | Recon Loss: 0.009137 | Commit Loss: 0.004299 | Perplexity: 902.004652 | infonce: 0.000372
+2025-10-08 16:34:34,727 Stage: Train 0.5 | Epoch: 17 | Iter: 17800 | Total Loss: 0.011499 | Recon Loss: 0.008963 | Commit Loss: 0.004384 | Perplexity: 903.564038 | infonce: 0.000344
+2025-10-08 16:38:23,828 Stage: Train 0.5 | Epoch: 17 | Iter: 18000 | Total Loss: 0.011479 | Recon Loss: 0.009027 | Commit Loss: 0.004250 | Perplexity: 903.249650 | infonce: 0.000327
+2025-10-08 16:42:12,013 Stage: Train 0.5 | Epoch: 17 | Iter: 18200 | Total Loss: 0.011351 | Recon Loss: 0.008864 | Commit Loss: 0.004298 | Perplexity: 906.437047 | infonce: 0.000338
+Trainning Epoch:   4%|▎         | 18/494 [5:51:33<154:14:41, 1166.56s/it]Trainning Epoch:   4%|▎         | 18/494 [5:51:33<154:14:42, 1166.56s/it]2025-10-08 16:46:04,948 Stage: Train 0.5 | Epoch: 18 | Iter: 18400 | Total Loss: 0.011555 | Recon Loss: 0.009072 | Commit Loss: 0.004258 | Perplexity: 905.636283 | infonce: 0.000354
+2025-10-08 16:49:53,039 Stage: Train 0.5 | Epoch: 18 | Iter: 18600 | Total Loss: 0.011178 | Recon Loss: 0.008736 | Commit Loss: 0.004222 | Perplexity: 908.090910 | infonce: 0.000331
+2025-10-08 16:53:42,218 Stage: Train 0.5 | Epoch: 18 | Iter: 18800 | Total Loss: 0.011155 | Recon Loss: 0.008702 | Commit Loss: 0.004234 | Perplexity: 906.955739 | infonce: 0.000336
+2025-10-08 16:57:31,434 Stage: Train 0.5 | Epoch: 18 | Iter: 19000 | Total Loss: 0.011311 | Recon Loss: 0.008889 | Commit Loss: 0.004212 | Perplexity: 908.075519 | infonce: 0.000316
+2025-10-08 17:01:19,913 Stage: Train 0.5 | Epoch: 18 | Iter: 19200 | Total Loss: 0.011055 | Recon Loss: 0.008646 | Commit Loss: 0.004188 | Perplexity: 906.588614 | infonce: 0.000314
+Trainning Epoch:   4%|▍         | 19/494 [6:10:55<153:45:53, 1165.38s/it]Trainning Epoch:   4%|▍         | 19/494 [6:10:55<153:45:53, 1165.38s/it]2025-10-08 17:05:12,130 Stage: Train 0.5 | Epoch: 19 | Iter: 19400 | Total Loss: 0.011050 | Recon Loss: 0.008654 | Commit Loss: 0.004166 | Perplexity: 910.095249 | infonce: 0.000313
+2025-10-08 17:09:00,928 Stage: Train 0.5 | Epoch: 19 | Iter: 19600 | Total Loss: 0.010991 | Recon Loss: 0.008635 | Commit Loss: 0.004108 | Perplexity: 909.624646 | infonce: 0.000301
+2025-10-08 17:12:51,023 Stage: Train 0.5 | Epoch: 19 | Iter: 19800 | Total Loss: 0.010933 | Recon Loss: 0.008567 | Commit Loss: 0.004111 | Perplexity: 908.512661 | infonce: 0.000310
+2025-10-08 17:16:39,437 Stage: Train 0.5 | Epoch: 19 | Iter: 20000 | Total Loss: 0.010896 | Recon Loss: 0.008536 | Commit Loss: 0.004122 | Perplexity: 913.654645 | infonce: 0.000299
+2025-10-08 17:16:39,437 Saving model at iteration 20000
+/home/wxs/anaconda3/envs/llama_factory/lib/python3.10/site-packages/torch/distributed/distributed_c10d.py:4631: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+/home/wxs/anaconda3/envs/llama_factory/lib/python3.10/site-packages/torch/distributed/distributed_c10d.py:4631: UserWarning: No device id is provided via `init_process_group` or `barrier `. Using the current device set by the user. 
+  warnings.warn(  # warn only once
+2025-10-08 17:16:39,720 Saving current state to vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce/models/checkpoint_epoch_20_step_20000
+2025-10-08 17:16:41,226 Model weights saved in vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce/models/checkpoint_epoch_20_step_20000/model.safetensors
+2025-10-08 17:16:43,002 Optimizer state saved in vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce/models/checkpoint_epoch_20_step_20000/optimizer.bin
+2025-10-08 17:16:43,002 Scheduler state saved in vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce/models/checkpoint_epoch_20_step_20000/scheduler.bin
+2025-10-08 17:16:43,002 Sampler state for dataloader 0 saved in vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce/models/checkpoint_epoch_20_step_20000/sampler.bin
+2025-10-08 17:16:43,003 Random states saved in vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce/models/checkpoint_epoch_20_step_20000/random_states_0.pkl
+2025-10-08 17:20:31,399 Stage: Train 0.5 | Epoch: 19 | Iter: 20200 | Total Loss: 0.010808 | Recon Loss: 0.008469 | Commit Loss: 0.004074 | Perplexity: 908.930757 | infonce: 0.000302
+Trainning Epoch:   4%|▍         | 20/494 [6:30:22<153:28:55, 1165.69s/it]Trainning Epoch:   4%|▍         | 20/494 [6:30:22<153:28:55, 1165.69s/it]2025-10-08 17:24:26,462 Stage: Train 0.5 | Epoch: 20 | Iter: 20400 | Total Loss: 0.010807 | Recon Loss: 0.008410 | Commit Loss: 0.004180 | Perplexity: 914.152177 | infonce: 0.000307
+2025-10-08 17:28:19,058 Stage: Train 0.5 | Epoch: 20 | Iter: 20600 | Total Loss: 0.010778 | Recon Loss: 0.008419 | Commit Loss: 0.004088 | Perplexity: 914.190823 | infonce: 0.000315
+2025-10-08 17:32:10,384 Stage: Train 0.5 | Epoch: 20 | Iter: 20800 | Total Loss: 0.010793 | Recon Loss: 0.008430 | Commit Loss: 0.004096 | Perplexity: 916.416793 | infonce: 0.000315
+2025-10-08 17:36:02,115 Stage: Train 0.5 | Epoch: 20 | Iter: 21000 | Total Loss: 0.010629 | Recon Loss: 0.008297 | Commit Loss: 0.004089 | Perplexity: 916.083162 | infonce: 0.000288
+2025-10-08 17:39:54,942 Stage: Train 0.5 | Epoch: 20 | Iter: 21200 | Total Loss: 0.010555 | Recon Loss: 0.008276 | Commit Loss: 0.003989 | Perplexity: 914.183160 | infonce: 0.000285
+Trainning Epoch:   4%|▍         | 21/494 [6:50:01<153:42:14, 1169.84s/it]Trainning Epoch:   4%|▍         | 21/494 [6:50:01<153:42:14, 1169.84s/it]2025-10-08 17:43:51,216 Stage: Train 0.5 | Epoch: 21 | Iter: 21400 | Total Loss: 0.010563 | Recon Loss: 0.008235 | Commit Loss: 0.004063 | Perplexity: 915.907972 | infonce: 0.000297
+2025-10-08 17:47:44,091 Stage: Train 0.5 | Epoch: 21 | Iter: 21600 | Total Loss: 0.010648 | Recon Loss: 0.008351 | Commit Loss: 0.004015 | Perplexity: 915.201292 | infonce: 0.000289
+2025-10-08 17:51:35,605 Stage: Train 0.5 | Epoch: 21 | Iter: 21800 | Total Loss: 0.010538 | Recon Loss: 0.008253 | Commit Loss: 0.003990 | Perplexity: 916.641636 | infonce: 0.000291
+2025-10-08 17:55:27,117 Stage: Train 0.5 | Epoch: 21 | Iter: 22000 | Total Loss: 0.010478 | Recon Loss: 0.008190 | Commit Loss: 0.004004 | Perplexity: 920.024572 | infonce: 0.000286
+2025-10-08 17:59:18,607 Stage: Train 0.5 | Epoch: 21 | Iter: 22200 | Total Loss: 0.010524 | Recon Loss: 0.008311 | Commit Loss: 0.003880 | Perplexity: 916.618648 | infonce: 0.000273
+Trainning Epoch:   4%|▍         | 22/494 [7:09:40<153:43:12, 1172.44s/it]Trainning Epoch:   4%|▍         | 22/494 [7:09:40<153:43:12, 1172.44s/it]2025-10-08 18:03:13,895 Stage: Train 0.5 | Epoch: 22 | Iter: 22400 | Total Loss: 0.010359 | Recon Loss: 0.008065 | Commit Loss: 0.004024 | Perplexity: 919.359186 | infonce: 0.000282
+2025-10-08 18:07:03,994 Stage: Train 0.5 | Epoch: 22 | Iter: 22600 | Total Loss: 0.010398 | Recon Loss: 0.008145 | Commit Loss: 0.003933 | Perplexity: 918.088521 | infonce: 0.000286
+2025-10-08 18:10:53,518 Stage: Train 0.5 | Epoch: 22 | Iter: 22800 | Total Loss: 0.010373 | Recon Loss: 0.008083 | Commit Loss: 0.004010 | Perplexity: 921.692003 | infonce: 0.000285
+2025-10-08 18:14:42,484 Stage: Train 0.5 | Epoch: 22 | Iter: 23000 | Total Loss: 0.010367 | Recon Loss: 0.008086 | Commit Loss: 0.003971 | Perplexity: 919.689496 | infonce: 0.000296
+2025-10-08 18:18:32,366 Stage: Train 0.5 | Epoch: 22 | Iter: 23200 | Total Loss: 0.010226 | Recon Loss: 0.007970 | Commit Loss: 0.003949 | Perplexity: 920.703077 | infonce: 0.000281
+Trainning Epoch:   5%|▍         | 23/494 [7:29:07<153:12:17, 1170.99s/it]Trainning Epoch:   5%|▍         | 23/494 [7:29:07<153:12:17, 1170.99s/it]2025-10-08 18:22:26,179 Stage: Train 0.5 | Epoch: 23 | Iter: 23400 | Total Loss: 0.010152 | Recon Loss: 0.007906 | Commit Loss: 0.003955 | Perplexity: 918.453392 | infonce: 0.000269
+2025-10-08 18:26:17,623 Stage: Train 0.5 | Epoch: 23 | Iter: 23600 | Total Loss: 0.010234 | Recon Loss: 0.007992 | Commit Loss: 0.003943 | Perplexity: 918.982404 | infonce: 0.000270
+2025-10-08 18:30:08,362 Stage: Train 0.5 | Epoch: 23 | Iter: 23800 | Total Loss: 0.010217 | Recon Loss: 0.007977 | Commit Loss: 0.003924 | Perplexity: 921.086362 | infonce: 0.000279
+2025-10-08 18:33:58,920 Stage: Train 0.5 | Epoch: 23 | Iter: 24000 | Total Loss: 0.010132 | Recon Loss: 0.007906 | Commit Loss: 0.003887 | Perplexity: 919.023774 | infonce: 0.000282
+2025-10-08 18:37:49,213 Stage: Train 0.5 | Epoch: 23 | Iter: 24200 | Total Loss: 0.010057 | Recon Loss: 0.007864 | Commit Loss: 0.003845 | Perplexity: 918.900617 | infonce: 0.000270
+Trainning Epoch:   5%|▍         | 24/494 [7:48:40<152:56:13, 1171.43s/it]Trainning Epoch:   5%|▍         | 24/494 [7:48:40<152:56:16, 1171.44s/it]2025-10-08 18:41:43,876 Stage: Train 0.5 | Epoch: 24 | Iter: 24400 | Total Loss: 0.010038 | Recon Loss: 0.007840 | Commit Loss: 0.003881 | Perplexity: 920.983591 | infonce: 0.000258
+2025-10-08 18:45:35,252 Stage: Train 0.5 | Epoch: 24 | Iter: 24600 | Total Loss: 0.010128 | Recon Loss: 0.007860 | Commit Loss: 0.003957 | Perplexity: 925.040873 | infonce: 0.000290
+2025-10-08 18:49:26,871 Stage: Train 0.5 | Epoch: 24 | Iter: 24800 | Total Loss: 0.009989 | Recon Loss: 0.007790 | Commit Loss: 0.003880 | Perplexity: 920.928517 | infonce: 0.000259
+2025-10-08 18:53:19,126 Stage: Train 0.5 | Epoch: 24 | Iter: 25000 | Total Loss: 0.010163 | Recon Loss: 0.007924 | Commit Loss: 0.003929 | Perplexity: 923.677414 | infonce: 0.000275
+2025-10-08 18:57:08,596 Stage: Train 0.5 | Epoch: 24 | Iter: 25200 | Total Loss: 0.009905 | Recon Loss: 0.007723 | Commit Loss: 0.003839 | Perplexity: 922.159000 | infonce: 0.000262
+Trainning Epoch:   5%|▌         | 25/494 [8:08:14<152:43:24, 1172.29s/it]Trainning Epoch:   5%|▌         | 25/494 [8:08:14<152:43:25, 1172.29s/it]2025-10-08 19:01:03,341 Stage: Train 0.5 | Epoch: 25 | Iter: 25400 | Total Loss: 0.009940 | Recon Loss: 0.007736 | Commit Loss: 0.003881 | Perplexity: 923.337094 | infonce: 0.000263
+2025-10-08 19:04:54,506 Stage: Train 0.5 | Epoch: 25 | Iter: 25600 | Total Loss: 0.009991 | Recon Loss: 0.007805 | Commit Loss: 0.003858 | Perplexity: 921.341501 | infonce: 0.000257
+2025-10-08 19:08:46,336 Stage: Train 0.5 | Epoch: 25 | Iter: 25800 | Total Loss: 0.009954 | Recon Loss: 0.007761 | Commit Loss: 0.003889 | Perplexity: 923.866008 | infonce: 0.000248
+2025-10-08 19:12:37,881 Stage: Train 0.5 | Epoch: 25 | Iter: 26000 | Total Loss: 0.009873 | Recon Loss: 0.007701 | Commit Loss: 0.003841 | Perplexity: 923.707401 | infonce: 0.000251
+2025-10-08 19:16:29,139 Stage: Train 0.5 | Epoch: 25 | Iter: 26200 | Total Loss: 0.009854 | Recon Loss: 0.007690 | Commit Loss: 0.003841 | Perplexity: 922.461778 | infonce: 0.000243
+Trainning Epoch:   5%|▌         | 26/494 [8:27:51<152:33:12, 1173.49s/it]Trainning Epoch:   5%|▌         | 26/494 [8:27:51<152:33:12, 1173.49s/it]2025-10-08 19:20:24,345 Stage: Train 0.5 | Epoch: 26 | Iter: 26400 | Total Loss: 0.009793 | Recon Loss: 0.007631 | Commit Loss: 0.003830 | Perplexity: 925.847710 | infonce: 0.000246
+2025-10-08 19:24:16,568 Stage: Train 0.5 | Epoch: 26 | Iter: 26600 | Total Loss: 0.009734 | Recon Loss: 0.007546 | Commit Loss: 0.003836 | Perplexity: 922.620813 | infonce: 0.000270
+2025-10-08 19:28:07,610 Stage: Train 0.5 | Epoch: 26 | Iter: 26800 | Total Loss: 0.009764 | Recon Loss: 0.007617 | Commit Loss: 0.003791 | Perplexity: 924.658256 | infonce: 0.000252
+2025-10-08 19:31:57,319 Stage: Train 0.5 | Epoch: 26 | Iter: 27000 | Total Loss: 0.009848 | Recon Loss: 0.007688 | Commit Loss: 0.003794 | Perplexity: 922.130405 | infonce: 0.000263
+2025-10-08 19:35:47,900 Stage: Train 0.5 | Epoch: 26 | Iter: 27200 | Total Loss: 0.009738 | Recon Loss: 0.007556 | Commit Loss: 0.003865 | Perplexity: 927.044890 | infonce: 0.000250
+Trainning Epoch:   5%|▌         | 27/494 [8:47:24<152:12:51, 1173.39s/it]Trainning Epoch:   5%|▌         | 27/494 [8:47:24<152:12:52, 1173.39s/it]2025-10-08 19:39:42,246 Stage: Train 0.5 | Epoch: 27 | Iter: 27400 | Total Loss: 0.009658 | Recon Loss: 0.007498 | Commit Loss: 0.003823 | Perplexity: 925.974457 | infonce: 0.000248
+2025-10-08 19:43:35,170 Stage: Train 0.5 | Epoch: 27 | Iter: 27600 | Total Loss: 0.009686 | Recon Loss: 0.007570 | Commit Loss: 0.003746 | Perplexity: 923.677388 | infonce: 0.000242
+2025-10-08 19:47:27,377 Stage: Train 0.5 | Epoch: 27 | Iter: 27800 | Total Loss: 0.009702 | Recon Loss: 0.007536 | Commit Loss: 0.003842 | Perplexity: 927.667601 | infonce: 0.000244
+2025-10-08 19:51:19,292 Stage: Train 0.5 | Epoch: 27 | Iter: 28000 | Total Loss: 0.009594 | Recon Loss: 0.007421 | Commit Loss: 0.003842 | Perplexity: 924.014418 | infonce: 0.000252
+2025-10-08 19:55:11,098 Stage: Train 0.5 | Epoch: 27 | Iter: 28200 | Total Loss: 0.009601 | Recon Loss: 0.007460 | Commit Loss: 0.003789 | Perplexity: 925.565214 | infonce: 0.000247
+Trainning Epoch:   6%|▌         | 28/494 [9:07:05<152:11:12, 1175.69s/it]Trainning Epoch:   6%|▌         | 28/494 [9:07:05<152:11:12, 1175.69s/it]2025-10-08 19:59:07,914 Stage: Train 0.5 | Epoch: 28 | Iter: 28400 | Total Loss: 0.009524 | Recon Loss: 0.007389 | Commit Loss: 0.003787 | Perplexity: 925.530034 | infonce: 0.000241
+2025-10-08 20:02:57,063 Stage: Train 0.5 | Epoch: 28 | Iter: 28600 | Total Loss: 0.009559 | Recon Loss: 0.007413 | Commit Loss: 0.003796 | Perplexity: 924.804714 | infonce: 0.000247
+2025-10-08 20:06:45,424 Stage: Train 0.5 | Epoch: 28 | Iter: 28800 | Total Loss: 0.009520 | Recon Loss: 0.007366 | Commit Loss: 0.003828 | Perplexity: 927.768566 | infonce: 0.000240
+2025-10-08 20:10:33,333 Stage: Train 0.5 | Epoch: 28 | Iter: 29000 | Total Loss: 0.009557 | Recon Loss: 0.007449 | Commit Loss: 0.003748 | Perplexity: 924.831190 | infonce: 0.000234
+2025-10-08 20:14:22,218 Stage: Train 0.5 | Epoch: 28 | Iter: 29200 | Total Loss: 0.009403 | Recon Loss: 0.007276 | Commit Loss: 0.003775 | Perplexity: 924.420052 | infonce: 0.000239
+Trainning Epoch:   6%|▌         | 29/494 [9:26:26<151:18:07, 1171.37s/it]Trainning Epoch:   6%|▌         | 29/494 [9:26:26<151:18:06, 1171.37s/it]2025-10-08 20:18:14,574 Stage: Train 0.5 | Epoch: 29 | Iter: 29400 | Total Loss: 0.009584 | Recon Loss: 0.007459 | Commit Loss: 0.003765 | Perplexity: 925.657385 | infonce: 0.000242
+2025-10-08 20:22:07,537 Stage: Train 0.5 | Epoch: 29 | Iter: 29600 | Total Loss: 0.009307 | Recon Loss: 0.007192 | Commit Loss: 0.003772 | Perplexity: 924.760757 | infonce: 0.000229
+2025-10-08 20:25:59,918 Stage: Train 0.5 | Epoch: 29 | Iter: 29800 | Total Loss: 0.009447 | Recon Loss: 0.007342 | Commit Loss: 0.003735 | Perplexity: 924.566020 | infonce: 0.000238
+2025-10-08 20:29:51,762 Stage: Train 0.5 | Epoch: 29 | Iter: 30000 | Total Loss: 0.009535 | Recon Loss: 0.007410 | Commit Loss: 0.003759 | Perplexity: 924.432508 | infonce: 0.000245
+2025-10-08 20:33:43,743 Stage: Train 0.5 | Epoch: 29 | Iter: 30200 | Total Loss: 0.009341 | Recon Loss: 0.007242 | Commit Loss: 0.003729 | Perplexity: 926.638805 | infonce: 0.000235
+Trainning Epoch:   6%|▌         | 30/494 [9:46:05<151:15:40, 1173.58s/it]Trainning Epoch:   6%|▌         | 30/494 [9:46:05<151:15:40, 1173.58s/it]2025-10-08 20:37:38,191 Stage: Train 0.5 | Epoch: 30 | Iter: 30400 | Total Loss: 0.009369 | Recon Loss: 0.007283 | Commit Loss: 0.003734 | Perplexity: 924.234158 | infonce: 0.000218
+2025-10-08 20:41:30,339 Stage: Train 0.5 | Epoch: 30 | Iter: 30600 | Total Loss: 0.009321 | Recon Loss: 0.007220 | Commit Loss: 0.003746 | Perplexity: 922.747921 | infonce: 0.000228
+2025-10-08 20:45:23,117 Stage: Train 0.5 | Epoch: 30 | Iter: 30800 | Total Loss: 0.009363 | Recon Loss: 0.007215 | Commit Loss: 0.003802 | Perplexity: 927.865818 | infonce: 0.000246
+2025-10-08 20:49:15,453 Stage: Train 0.5 | Epoch: 30 | Iter: 31000 | Total Loss: 0.009416 | Recon Loss: 0.007344 | Commit Loss: 0.003672 | Perplexity: 922.571692 | infonce: 0.000236
+2025-10-08 20:53:07,050 Stage: Train 0.5 | Epoch: 30 | Iter: 31200 | Total Loss: 0.009224 | Recon Loss: 0.007167 | Commit Loss: 0.003669 | Perplexity: 923.870013 | infonce: 0.000222
+2025-10-08 20:56:58,664 Stage: Train 0.5 | Epoch: 30 | Iter: 31400 | Total Loss: 0.009297 | Recon Loss: 0.007228 | Commit Loss: 0.003720 | Perplexity: 927.078343 | infonce: 0.000208
+Trainning Epoch:   6%|▋         | 31/494 [10:05:44<151:09:34, 1175.32s/it]Trainning Epoch:   6%|▋         | 31/494 [10:05:44<151:09:38, 1175.33s/it]2025-10-08 21:00:54,673 Stage: Train 0.5 | Epoch: 31 | Iter: 31600 | Total Loss: 0.009289 | Recon Loss: 0.007169 | Commit Loss: 0.003767 | Perplexity: 927.208441 | infonce: 0.000236
+2025-10-08 21:04:47,208 Stage: Train 0.5 | Epoch: 31 | Iter: 31800 | Total Loss: 0.009220 | Recon Loss: 0.007096 | Commit Loss: 0.003767 | Perplexity: 929.538964 | infonce: 0.000240
+2025-10-08 21:08:38,605 Stage: Train 0.5 | Epoch: 31 | Iter: 32000 | Total Loss: 0.009227 | Recon Loss: 0.007123 | Commit Loss: 0.003731 | Perplexity: 926.688513 | infonce: 0.000238
+2025-10-08 21:12:30,671 Stage: Train 0.5 | Epoch: 31 | Iter: 32200 | Total Loss: 0.009157 | Recon Loss: 0.007088 | Commit Loss: 0.003689 | Perplexity: 926.976667 | infonce: 0.000225
+2025-10-08 21:16:21,712 Stage: Train 0.5 | Epoch: 31 | Iter: 32400 | Total Loss: 0.009227 | Recon Loss: 0.007152 | Commit Loss: 0.003694 | Perplexity: 922.404410 | infonce: 0.000228
+Trainning Epoch:   6%|▋         | 32/494 [10:25:22<150:56:10, 1176.13s/it]Trainning Epoch:   6%|▋         | 32/494 [10:25:22<150:56:09, 1176.12s/it]2025-10-08 21:20:16,625 Stage: Train 0.5 | Epoch: 32 | Iter: 32600 | Total Loss: 0.009187 | Recon Loss: 0.007115 | Commit Loss: 0.003700 | Perplexity: 925.598951 | infonce: 0.000222
+2025-10-08 21:24:07,998 Stage: Train 0.5 | Epoch: 32 | Iter: 32800 | Total Loss: 0.009106 | Recon Loss: 0.007059 | Commit Loss: 0.003675 | Perplexity: 926.405831 | infonce: 0.000209
+2025-10-08 21:27:58,928 Stage: Train 0.5 | Epoch: 32 | Iter: 33000 | Total Loss: 0.009196 | Recon Loss: 0.007138 | Commit Loss: 0.003662 | Perplexity: 926.218294 | infonce: 0.000227
+2025-10-08 21:31:49,413 Stage: Train 0.5 | Epoch: 32 | Iter: 33200 | Total Loss: 0.009165 | Recon Loss: 0.007073 | Commit Loss: 0.003721 | Perplexity: 927.902576 | infonce: 0.000232
+2025-10-08 21:35:40,426 Stage: Train 0.5 | Epoch: 32 | Iter: 33400 | Total Loss: 0.009065 | Recon Loss: 0.006983 | Commit Loss: 0.003727 | Perplexity: 927.369964 | infonce: 0.000218
+Trainning Epoch:   7%|▋         | 33/494 [10:44:56<150:30:31, 1175.34s/it]Trainning Epoch:   7%|▋         | 33/494 [10:44:56<150:30:31, 1175.34s/it]2025-10-08 21:39:36,556 Stage: Train 0.5 | Epoch: 33 | Iter: 33600 | Total Loss: 0.009078 | Recon Loss: 0.007024 | Commit Loss: 0.003675 | Perplexity: 925.710453 | infonce: 0.000217
+2025-10-08 21:43:28,664 Stage: Train 0.5 | Epoch: 33 | Iter: 33800 | Total Loss: 0.009051 | Recon Loss: 0.006961 | Commit Loss: 0.003726 | Perplexity: 927.977313 | infonce: 0.000227
+2025-10-08 21:47:20,481 Stage: Train 0.5 | Epoch: 33 | Iter: 34000 | Total Loss: 0.009076 | Recon Loss: 0.007017 | Commit Loss: 0.003665 | Perplexity: 928.271227 | infonce: 0.000226
+2025-10-08 21:51:12,036 Stage: Train 0.5 | Epoch: 33 | Iter: 34200 | Total Loss: 0.008972 | Recon Loss: 0.006947 | Commit Loss: 0.003610 | Perplexity: 926.754538 | infonce: 0.000220
+2025-10-08 21:55:03,714 Stage: Train 0.5 | Epoch: 33 | Iter: 34400 | Total Loss: 0.009032 | Recon Loss: 0.006948 | Commit Loss: 0.003695 | Perplexity: 929.219023 | infonce: 0.000237
+Trainning Epoch:   7%|▋         | 34/494 [11:04:34<150:18:07, 1176.28s/it]Trainning Epoch:   7%|▋         | 34/494 [11:04:34<150:18:06, 1176.28s/it]2025-10-08 21:58:59,729 Stage: Train 0.5 | Epoch: 34 | Iter: 34600 | Total Loss: 0.009049 | Recon Loss: 0.006998 | Commit Loss: 0.003675 | Perplexity: 928.723431 | infonce: 0.000213
+2025-10-08 22:02:51,894 Stage: Train 0.5 | Epoch: 34 | Iter: 34800 | Total Loss: 0.008922 | Recon Loss: 0.006875 | Commit Loss: 0.003657 | Perplexity: 932.111275 | infonce: 0.000218
+2025-10-08 22:06:44,897 Stage: Train 0.5 | Epoch: 34 | Iter: 35000 | Total Loss: 0.008957 | Recon Loss: 0.006928 | Commit Loss: 0.003643 | Perplexity: 930.234747 | infonce: 0.000208
+2025-10-08 22:10:37,774 Stage: Train 0.5 | Epoch: 34 | Iter: 35200 | Total Loss: 0.008923 | Recon Loss: 0.006903 | Commit Loss: 0.003623 | Perplexity: 928.595271 | infonce: 0.000209
+2025-10-08 22:14:29,803 Stage: Train 0.5 | Epoch: 34 | Iter: 35400 | Total Loss: 0.008931 | Recon Loss: 0.006869 | Commit Loss: 0.003663 | Perplexity: 930.471524 | infonce: 0.000230
+Trainning Epoch:   7%|▋         | 35/494 [11:24:15<150:09:43, 1177.74s/it]Trainning Epoch:   7%|▋         | 35/494 [11:24:15<150:09:43, 1177.74s/it]2025-10-08 22:18:24,944 Stage: Train 0.5 | Epoch: 35 | Iter: 35600 | Total Loss: 0.008805 | Recon Loss: 0.006802 | Commit Loss: 0.003587 | Perplexity: 929.734055 | infonce: 0.000210
+2025-10-08 22:22:16,516 Stage: Train 0.5 | Epoch: 35 | Iter: 35800 | Total Loss: 0.008901 | Recon Loss: 0.006865 | Commit Loss: 0.003639 | Perplexity: 934.265562 | infonce: 0.000216
+2025-10-08 22:26:07,641 Stage: Train 0.5 | Epoch: 35 | Iter: 36000 | Total Loss: 0.008904 | Recon Loss: 0.006877 | Commit Loss: 0.003646 | Perplexity: 933.372298 | infonce: 0.000204
+2025-10-08 22:29:58,806 Stage: Train 0.5 | Epoch: 35 | Iter: 36200 | Total Loss: 0.008862 | Recon Loss: 0.006858 | Commit Loss: 0.003591 | Perplexity: 936.555345 | infonce: 0.000209
+2025-10-08 22:33:49,853 Stage: Train 0.5 | Epoch: 35 | Iter: 36400 | Total Loss: 0.008848 | Recon Loss: 0.006819 | Commit Loss: 0.003622 | Perplexity: 934.785883 | infonce: 0.000218
+Trainning Epoch:   7%|▋         | 36/494 [11:43:51<149:45:39, 1177.16s/it]Trainning Epoch:   7%|▋         | 36/494 [11:43:51<149:45:40, 1177.16s/it]2025-10-08 22:37:44,158 Stage: Train 0.5 | Epoch: 36 | Iter: 36600 | Total Loss: 0.008738 | Recon Loss: 0.006739 | Commit Loss: 0.003578 | Perplexity: 934.915485 | infonce: 0.000210
+2025-10-08 22:41:33,270 Stage: Train 0.5 | Epoch: 36 | Iter: 36800 | Total Loss: 0.008860 | Recon Loss: 0.006835 | Commit Loss: 0.003644 | Perplexity: 941.255119 | infonce: 0.000203
+2025-10-08 22:45:22,756 Stage: Train 0.5 | Epoch: 36 | Iter: 37000 | Total Loss: 0.008755 | Recon Loss: 0.006732 | Commit Loss: 0.003618 | Perplexity: 937.352045 | infonce: 0.000215
+2025-10-08 22:49:10,871 Stage: Train 0.5 | Epoch: 36 | Iter: 37200 | Total Loss: 0.008892 | Recon Loss: 0.006839 | Commit Loss: 0.003663 | Perplexity: 938.825992 | infonce: 0.000222
+2025-10-08 22:52:59,230 Stage: Train 0.5 | Epoch: 36 | Iter: 37400 | Total Loss: 0.008787 | Recon Loss: 0.006782 | Commit Loss: 0.003595 | Perplexity: 936.051714 | infonce: 0.000207
+Trainning Epoch:   7%|▋         | 37/494 [12:03:14<148:52:38, 1172.78s/it]Trainning Epoch:   7%|▋         | 37/494 [12:03:14<148:52:38, 1172.77s/it]2025-10-08 22:56:53,055 Stage: Train 0.5 | Epoch: 37 | Iter: 37600 | Total Loss: 0.008655 | Recon Loss: 0.006679 | Commit Loss: 0.003539 | Perplexity: 935.245453 | infonce: 0.000206
+2025-10-08 23:00:44,815 Stage: Train 0.5 | Epoch: 37 | Iter: 37800 | Total Loss: 0.008763 | Recon Loss: 0.006771 | Commit Loss: 0.003581 | Perplexity: 937.187165 | infonce: 0.000201
+2025-10-08 23:04:36,166 Stage: Train 0.5 | Epoch: 37 | Iter: 38000 | Total Loss: 0.008673 | Recon Loss: 0.006683 | Commit Loss: 0.003575 | Perplexity: 934.816858 | infonce: 0.000203
+2025-10-08 23:08:27,888 Stage: Train 0.5 | Epoch: 37 | Iter: 38200 | Total Loss: 0.008612 | Recon Loss: 0.006628 | Commit Loss: 0.003546 | Perplexity: 936.298987 | infonce: 0.000211
+2025-10-08 23:12:19,517 Stage: Train 0.5 | Epoch: 37 | Iter: 38400 | Total Loss: 0.008714 | Recon Loss: 0.006704 | Commit Loss: 0.003617 | Perplexity: 941.891479 | infonce: 0.000202
+Trainning Epoch:   8%|▊         | 38/494 [12:22:50<148:41:04, 1173.83s/it]Trainning Epoch:   8%|▊         | 38/494 [12:22:50<148:41:08, 1173.83s/it]2025-10-08 23:16:13,433 Stage: Train 0.5 | Epoch: 38 | Iter: 38600 | Total Loss: 0.008684 | Recon Loss: 0.006712 | Commit Loss: 0.003547 | Perplexity: 939.325274 | infonce: 0.000198
+2025-10-08 23:20:03,444 Stage: Train 0.5 | Epoch: 38 | Iter: 38800 | Total Loss: 0.008680 | Recon Loss: 0.006672 | Commit Loss: 0.003586 | Perplexity: 940.694960 | infonce: 0.000215
+2025-10-08 23:23:52,821 Stage: Train 0.5 | Epoch: 38 | Iter: 39000 | Total Loss: 0.008709 | Recon Loss: 0.006712 | Commit Loss: 0.003555 | Perplexity: 939.210092 | infonce: 0.000219
+2025-10-08 23:27:41,726 Stage: Train 0.5 | Epoch: 38 | Iter: 39200 | Total Loss: 0.008617 | Recon Loss: 0.006624 | Commit Loss: 0.003575 | Perplexity: 939.287873 | infonce: 0.000206
+2025-10-08 23:31:30,900 Stage: Train 0.5 | Epoch: 38 | Iter: 39400 | Total Loss: 0.008551 | Recon Loss: 0.006553 | Commit Loss: 0.003563 | Perplexity: 937.383041 | infonce: 0.000217
+Trainning Epoch:   8%|▊         | 39/494 [12:42:16<148:02:47, 1171.36s/it]Trainning Epoch:   8%|▊         | 39/494 [12:42:16<148:02:49, 1171.36s/it]2025-10-08 23:35:26,042 Stage: Train 0.5 | Epoch: 39 | Iter: 39600 | Total Loss: 0.008649 | Recon Loss: 0.006650 | Commit Loss: 0.003591 | Perplexity: 940.655462 | infonce: 0.000203
+2025-10-08 23:39:18,499 Stage: Train 0.5 | Epoch: 39 | Iter: 39800 | Total Loss: 0.008539 | Recon Loss: 0.006573 | Commit Loss: 0.003542 | Perplexity: 942.357624 | infonce: 0.000194
+2025-10-08 23:43:10,766 Stage: Train 0.5 | Epoch: 39 | Iter: 40000 | Total Loss: 0.008533 | Recon Loss: 0.006560 | Commit Loss: 0.003561 | Perplexity: 944.379070 | infonce: 0.000192
+2025-10-08 23:43:10,767 Saving model at iteration 40000
+2025-10-08 23:43:10,950 Saving current state to vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce/models/checkpoint_epoch_40_step_40000
+2025-10-08 23:43:12,453 Model weights saved in vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce/models/checkpoint_epoch_40_step_40000/model.safetensors
+2025-10-08 23:43:14,263 Optimizer state saved in vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce/models/checkpoint_epoch_40_step_40000/optimizer.bin
+2025-10-08 23:43:14,264 Scheduler state saved in vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce/models/checkpoint_epoch_40_step_40000/scheduler.bin
+2025-10-08 23:43:14,264 Sampler state for dataloader 0 saved in vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce/models/checkpoint_epoch_40_step_40000/sampler.bin
+2025-10-08 23:43:14,265 Random states saved in vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce/models/checkpoint_epoch_40_step_40000/random_states_0.pkl
+2025-10-08 23:47:06,792 Stage: Train 0.5 | Epoch: 39 | Iter: 40200 | Total Loss: 0.008541 | Recon Loss: 0.006557 | Commit Loss: 0.003574 | Perplexity: 941.605752 | infonce: 0.000196
+2025-10-08 23:50:59,861 Stage: Train 0.5 | Epoch: 39 | Iter: 40400 | Total Loss: 0.008525 | Recon Loss: 0.006575 | Commit Loss: 0.003499 | Perplexity: 941.152108 | infonce: 0.000201
+Trainning Epoch:   8%|▊         | 40/494 [13:02:00<148:14:10, 1175.44s/it]Trainning Epoch:   8%|▊         | 40/494 [13:02:01<148:14:13, 1175.45s/it]2025-10-08 23:54:55,810 Stage: Train 0.5 | Epoch: 40 | Iter: 40600 | Total Loss: 0.008461 | Recon Loss: 0.006541 | Commit Loss: 0.003467 | Perplexity: 946.354655 | infonce: 0.000186
+2025-10-08 23:58:49,389 Stage: Train 0.5 | Epoch: 40 | Iter: 40800 | Total Loss: 0.008378 | Recon Loss: 0.006440 | Commit Loss: 0.003485 | Perplexity: 946.035860 | infonce: 0.000195
+2025-10-09 00:02:42,779 Stage: Train 0.5 | Epoch: 40 | Iter: 41000 | Total Loss: 0.008493 | Recon Loss: 0.006527 | Commit Loss: 0.003527 | Perplexity: 946.261933 | infonce: 0.000203
+2025-10-09 00:06:34,162 Stage: Train 0.5 | Epoch: 40 | Iter: 41200 | Total Loss: 0.008476 | Recon Loss: 0.006526 | Commit Loss: 0.003495 | Perplexity: 944.626903 | infonce: 0.000202
+2025-10-09 00:10:26,583 Stage: Train 0.5 | Epoch: 40 | Iter: 41400 | Total Loss: 0.008454 | Recon Loss: 0.006553 | Commit Loss: 0.003427 | Perplexity: 945.837307 | infonce: 0.000188
+Trainning Epoch:   8%|▊         | 41/494 [13:21:43<148:09:41, 1177.44s/it]Trainning Epoch:   8%|▊         | 41/494 [13:21:43<148:09:42, 1177.44s/it]2025-10-09 00:14:22,958 Stage: Train 0.5 | Epoch: 41 | Iter: 41600 | Total Loss: 0.008532 | Recon Loss: 0.006557 | Commit Loss: 0.003531 | Perplexity: 946.955124 | infonce: 0.000209
+2025-10-09 00:18:16,845 Stage: Train 0.5 | Epoch: 41 | Iter: 41800 | Total Loss: 0.008472 | Recon Loss: 0.006493 | Commit Loss: 0.003550 | Perplexity: 947.709258 | infonce: 0.000203
+2025-10-09 00:22:10,436 Stage: Train 0.5 | Epoch: 41 | Iter: 42000 | Total Loss: 0.008429 | Recon Loss: 0.006510 | Commit Loss: 0.003462 | Perplexity: 946.696328 | infonce: 0.000187
+2025-10-09 00:26:03,749 Stage: Train 0.5 | Epoch: 41 | Iter: 42200 | Total Loss: 0.008335 | Recon Loss: 0.006424 | Commit Loss: 0.003425 | Perplexity: 947.718469 | infonce: 0.000199
+2025-10-09 00:29:56,307 Stage: Train 0.5 | Epoch: 41 | Iter: 42400 | Total Loss: 0.008335 | Recon Loss: 0.006408 | Commit Loss: 0.003460 | Perplexity: 949.331291 | infonce: 0.000197
+Trainning Epoch:   9%|▊         | 42/494 [13:41:29<148:10:10, 1180.11s/it]Trainning Epoch:   9%|▊         | 42/494 [13:41:29<148:10:11, 1180.11s/it]2025-10-09 00:33:53,288 Stage: Train 0.5 | Epoch: 42 | Iter: 42600 | Total Loss: 0.008293 | Recon Loss: 0.006390 | Commit Loss: 0.003424 | Perplexity: 947.518148 | infonce: 0.000191
+2025-10-09 00:37:42,842 Stage: Train 0.5 | Epoch: 42 | Iter: 42800 | Total Loss: 0.009423 | Recon Loss: 0.006587 | Commit Loss: 0.004097 | Perplexity: 951.382368 | infonce: 0.000788
+2025-10-09 00:41:32,747 Stage: Train 0.5 | Epoch: 42 | Iter: 43000 | Total Loss: 0.008897 | Recon Loss: 0.006570 | Commit Loss: 0.004167 | Perplexity: 939.887553 | infonce: 0.000244
+2025-10-09 00:45:21,970 Stage: Train 0.5 | Epoch: 42 | Iter: 43200 | Total Loss: 0.008486 | Recon Loss: 0.006459 | Commit Loss: 0.003663 | Perplexity: 951.484091 | infonce: 0.000196
+2025-10-09 00:49:11,360 Stage: Train 0.5 | Epoch: 42 | Iter: 43400 | Total Loss: 0.008245 | Recon Loss: 0.006365 | Commit Loss: 0.003431 | Perplexity: 946.339422 | infonce: 0.000164
+Trainning Epoch:   9%|▊         | 43/494 [14:00:56<147:20:45, 1176.15s/it]Trainning Epoch:   9%|▊         | 43/494 [14:00:56<147:20:45, 1176.15s/it]2025-10-09 00:53:05,805 Stage: Train 0.5 | Epoch: 43 | Iter: 43600 | Total Loss: 0.008251 | Recon Loss: 0.006344 | Commit Loss: 0.003433 | Perplexity: 947.646597 | infonce: 0.000191
+2025-10-09 00:56:58,712 Stage: Train 0.5 | Epoch: 43 | Iter: 43800 | Total Loss: 0.008200 | Recon Loss: 0.006338 | Commit Loss: 0.003353 | Perplexity: 948.485335 | infonce: 0.000185
+2025-10-09 01:00:51,422 Stage: Train 0.5 | Epoch: 43 | Iter: 44000 | Total Loss: 0.008375 | Recon Loss: 0.006431 | Commit Loss: 0.003498 | Perplexity: 955.150502 | infonce: 0.000195
+2025-10-09 01:04:42,652 Stage: Train 0.5 | Epoch: 43 | Iter: 44200 | Total Loss: 0.008257 | Recon Loss: 0.006367 | Commit Loss: 0.003421 | Perplexity: 952.310748 | infonce: 0.000179
+2025-10-09 01:08:33,149 Stage: Train 0.5 | Epoch: 43 | Iter: 44400 | Total Loss: 0.008148 | Recon Loss: 0.006257 | Commit Loss: 0.003416 | Perplexity: 954.328457 | infonce: 0.000183
+Trainning Epoch:   9%|▉         | 44/494 [14:20:34<147:05:37, 1176.75s/it]Trainning Epoch:   9%|▉         | 44/494 [14:20:34<147:05:37, 1176.75s/it]2025-10-09 01:12:27,935 Stage: Train 0.5 | Epoch: 44 | Iter: 44600 | Total Loss: 0.008230 | Recon Loss: 0.006313 | Commit Loss: 0.003435 | Perplexity: 953.378546 | infonce: 0.000200
+2025-10-09 01:16:19,434 Stage: Train 0.5 | Epoch: 44 | Iter: 44800 | Total Loss: 0.008205 | Recon Loss: 0.006305 | Commit Loss: 0.003437 | Perplexity: 955.442717 | infonce: 0.000182
+2025-10-09 01:20:10,334 Stage: Train 0.5 | Epoch: 44 | Iter: 45000 | Total Loss: 0.008067 | Recon Loss: 0.006193 | Commit Loss: 0.003378 | Perplexity: 951.432360 | infonce: 0.000185
+2025-10-09 01:24:01,063 Stage: Train 0.5 | Epoch: 44 | Iter: 45200 | Total Loss: 0.008136 | Recon Loss: 0.006247 | Commit Loss: 0.003403 | Perplexity: 952.109875 | infonce: 0.000187
+2025-10-09 01:27:51,752 Stage: Train 0.5 | Epoch: 44 | Iter: 45400 | Total Loss: 0.008125 | Recon Loss: 0.006282 | Commit Loss: 0.003334 | Perplexity: 950.500536 | infonce: 0.000176
+Trainning Epoch:   9%|▉         | 45/494 [14:40:07<146:37:13, 1175.58s/it]Trainning Epoch:   9%|▉         | 45/494 [14:40:07<146:37:13, 1175.57s/it]2025-10-09 01:31:47,502 Stage: Train 0.5 | Epoch: 45 | Iter: 45600 | Total Loss: 0.008132 | Recon Loss: 0.006270 | Commit Loss: 0.003364 | Perplexity: 954.274041 | infonce: 0.000180
+2025-10-09 01:35:40,749 Stage: Train 0.5 | Epoch: 45 | Iter: 45800 | Total Loss: 0.008078 | Recon Loss: 0.006206 | Commit Loss: 0.003379 | Perplexity: 956.716653 | infonce: 0.000182
+2025-10-09 01:39:33,866 Stage: Train 0.5 | Epoch: 45 | Iter: 46000 | Total Loss: 0.008187 | Recon Loss: 0.006312 | Commit Loss: 0.003396 | Perplexity: 957.755875 | infonce: 0.000177
+2025-10-09 01:43:26,327 Stage: Train 0.5 | Epoch: 45 | Iter: 46200 | Total Loss: 0.008094 | Recon Loss: 0.006193 | Commit Loss: 0.003421 | Perplexity: 955.493488 | infonce: 0.000190
+2025-10-09 01:47:18,814 Stage: Train 0.5 | Epoch: 45 | Iter: 46400 | Total Loss: 0.008053 | Recon Loss: 0.006193 | Commit Loss: 0.003350 | Perplexity: 953.767945 | infonce: 0.000185
+Trainning Epoch:   9%|▉         | 46/494 [14:59:50<146:34:23, 1177.82s/it]Trainning Epoch:   9%|▉         | 46/494 [14:59:50<146:34:23, 1177.82s/it]2025-10-09 01:51:14,328 Stage: Train 0.5 | Epoch: 46 | Iter: 46600 | Total Loss: 0.008032 | Recon Loss: 0.006200 | Commit Loss: 0.003313 | Perplexity: 956.128286 | infonce: 0.000176
+2025-10-09 01:55:05,354 Stage: Train 0.5 | Epoch: 46 | Iter: 46800 | Total Loss: 0.008041 | Recon Loss: 0.006201 | Commit Loss: 0.003326 | Perplexity: 957.290467 | infonce: 0.000177
+2025-10-09 01:58:56,092 Stage: Train 0.5 | Epoch: 46 | Iter: 47000 | Total Loss: 0.007977 | Recon Loss: 0.006115 | Commit Loss: 0.003338 | Perplexity: 957.424076 | infonce: 0.000193
+2025-10-09 02:02:47,057 Stage: Train 0.5 | Epoch: 46 | Iter: 47200 | Total Loss: 0.007980 | Recon Loss: 0.006165 | Commit Loss: 0.003269 | Perplexity: 955.058457 | infonce: 0.000180
+2025-10-09 02:06:39,177 Stage: Train 0.5 | Epoch: 46 | Iter: 47400 | Total Loss: 0.007953 | Recon Loss: 0.006099 | Commit Loss: 0.003326 | Perplexity: 958.866096 | infonce: 0.000190
+2025-10-09 02:10:29,893 Stage: Train 0.5 | Epoch: 46 | Iter: 47600 | Total Loss: 0.008024 | Recon Loss: 0.006206 | Commit Loss: 0.003267 | Perplexity: 957.074811 | infonce: 0.000184
+Trainning Epoch:  10%|▉         | 47/494 [15:19:25<146:07:37, 1176.86s/it]Trainning Epoch:  10%|▉         | 47/494 [15:19:25<146:07:37, 1176.86s/it]2025-10-09 02:14:26,708 Stage: Train 0.5 | Epoch: 47 | Iter: 47800 | Total Loss: 0.008064 | Recon Loss: 0.006193 | Commit Loss: 0.003364 | Perplexity: 960.607319 | infonce: 0.000189
+2025-10-09 02:18:19,067 Stage: Train 0.5 | Epoch: 47 | Iter: 48000 | Total Loss: 0.007912 | Recon Loss: 0.006084 | Commit Loss: 0.003323 | Perplexity: 958.099601 | infonce: 0.000166
+2025-10-09 02:22:12,161 Stage: Train 0.5 | Epoch: 47 | Iter: 48200 | Total Loss: 0.007940 | Recon Loss: 0.006100 | Commit Loss: 0.003298 | Perplexity: 958.880414 | infonce: 0.000192
+2025-10-09 02:26:04,818 Stage: Train 0.5 | Epoch: 47 | Iter: 48400 | Total Loss: 0.007869 | Recon Loss: 0.006056 | Commit Loss: 0.003265 | Perplexity: 959.495141 | infonce: 0.000182
+2025-10-09 02:29:56,389 Stage: Train 0.5 | Epoch: 47 | Iter: 48600 | Total Loss: 0.007890 | Recon Loss: 0.006072 | Commit Loss: 0.003279 | Perplexity: 958.636221 | infonce: 0.000178
+Trainning Epoch:  10%|▉         | 48/494 [15:39:06<145:58:38, 1178.29s/it]Trainning Epoch:  10%|▉         | 48/494 [15:39:06<145:58:39, 1178.29s/it]2025-10-09 02:33:53,364 Stage: Train 0.5 | Epoch: 48 | Iter: 48800 | Total Loss: 0.007934 | Recon Loss: 0.006099 | Commit Loss: 0.003304 | Perplexity: 958.834131 | infonce: 0.000183
+2025-10-09 02:37:46,475 Stage: Train 0.5 | Epoch: 48 | Iter: 49000 | Total Loss: 0.007898 | Recon Loss: 0.006094 | Commit Loss: 0.003286 | Perplexity: 956.807062 | infonce: 0.000162
+2025-10-09 02:41:39,602 Stage: Train 0.5 | Epoch: 48 | Iter: 49200 | Total Loss: 0.008650 | Recon Loss: 0.006090 | Commit Loss: 0.004061 | Perplexity: 955.891642 | infonce: 0.000530
+2025-10-09 02:45:31,546 Stage: Train 0.5 | Epoch: 48 | Iter: 49400 | Total Loss: 0.007922 | Recon Loss: 0.006064 | Commit Loss: 0.003366 | Perplexity: 958.051649 | infonce: 0.000175
+2025-10-09 02:49:23,103 Stage: Train 0.5 | Epoch: 48 | Iter: 49600 | Total Loss: 0.007840 | Recon Loss: 0.005988 | Commit Loss: 0.003353 | Perplexity: 961.419394 | infonce: 0.000176
+Trainning Epoch:  10%|▉         | 49/494 [15:58:48<145:45:51, 1179.22s/it]Trainning Epoch:  10%|▉         | 49/494 [15:58:48<145:45:54, 1179.22s/it]2025-10-09 02:53:16,614 Stage: Train 0.5 | Epoch: 49 | Iter: 49800 | Total Loss: 0.007904 | Recon Loss: 0.006041 | Commit Loss: 0.003329 | Perplexity: 960.327653 | infonce: 0.000199
+2025-10-09 02:57:06,195 Stage: Train 0.5 | Epoch: 49 | Iter: 50000 | Total Loss: 0.007875 | Recon Loss: 0.006062 | Commit Loss: 0.003269 | Perplexity: 963.689518 | infonce: 0.000178
+2025-10-09 03:00:55,131 Stage: Train 0.5 | Epoch: 49 | Iter: 50200 | Total Loss: 0.007731 | Recon Loss: 0.005930 | Commit Loss: 0.003266 | Perplexity: 961.308161 | infonce: 0.000168
+2025-10-09 03:04:43,905 Stage: Train 0.5 | Epoch: 49 | Iter: 50400 | Total Loss: 0.007830 | Recon Loss: 0.006005 | Commit Loss: 0.003273 | Perplexity: 964.742929 | infonce: 0.000188
+2025-10-09 03:08:33,340 Stage: Train 0.5 | Epoch: 49 | Iter: 50600 | Total Loss: 0.007801 | Recon Loss: 0.006020 | Commit Loss: 0.003229 | Perplexity: 964.325566 | infonce: 0.000166
+Trainning Epoch:  10%|█         | 50/494 [16:18:12<144:54:12, 1174.89s/it]Trainning Epoch:  10%|█         | 50/494 [16:18:12<144:54:13, 1174.89s/it]2025-10-09 03:12:27,587 Stage: Train 0.5 | Epoch: 50 | Iter: 50800 | Total Loss: 0.007861 | Recon Loss: 0.006030 | Commit Loss: 0.003271 | Perplexity: 964.516967 | infonce: 0.000195
+2025-10-09 03:16:18,908 Stage: Train 0.5 | Epoch: 50 | Iter: 51000 | Total Loss: 0.007676 | Recon Loss: 0.005892 | Commit Loss: 0.003223 | Perplexity: 962.448909 | infonce: 0.000173
+2025-10-09 03:20:09,038 Stage: Train 0.5 | Epoch: 50 | Iter: 51200 | Total Loss: 0.007779 | Recon Loss: 0.005964 | Commit Loss: 0.003277 | Perplexity: 962.011718 | infonce: 0.000177
+2025-10-09 03:23:59,061 Stage: Train 0.5 | Epoch: 50 | Iter: 51400 | Total Loss: 0.007728 | Recon Loss: 0.005929 | Commit Loss: 0.003262 | Perplexity: 963.657826 | infonce: 0.000168
+2025-10-09 03:27:48,102 Stage: Train 0.5 | Epoch: 50 | Iter: 51600 | Total Loss: 0.007750 | Recon Loss: 0.005963 | Commit Loss: 0.003222 | Perplexity: 961.283656 | infonce: 0.000176
+Trainning Epoch:  10%|█         | 51/494 [16:37:43<144:25:31, 1173.66s/it]Trainning Epoch:  10%|█         | 51/494 [16:37:43<144:25:33, 1173.67s/it]2025-10-09 03:31:43,195 Stage: Train 0.5 | Epoch: 51 | Iter: 51800 | Total Loss: 0.007664 | Recon Loss: 0.005898 | Commit Loss: 0.003209 | Perplexity: 965.019058 | infonce: 0.000161
+2025-10-09 03:35:33,323 Stage: Train 0.5 | Epoch: 51 | Iter: 52000 | Total Loss: 0.007706 | Recon Loss: 0.005924 | Commit Loss: 0.003208 | Perplexity: 962.252314 | infonce: 0.000178
+2025-10-09 03:39:23,817 Stage: Train 0.5 | Epoch: 51 | Iter: 52200 | Total Loss: 0.008076 | Recon Loss: 0.005941 | Commit Loss: 0.003579 | Perplexity: 965.506040 | infonce: 0.000346
+2025-10-09 03:43:13,330 Stage: Train 0.5 | Epoch: 51 | Iter: 52400 | Total Loss: 0.007736 | Recon Loss: 0.005923 | Commit Loss: 0.003306 | Perplexity: 964.621562 | infonce: 0.000161
+2025-10-09 03:47:03,657 Stage: Train 0.5 | Epoch: 51 | Iter: 52600 | Total Loss: 0.007675 | Recon Loss: 0.005874 | Commit Loss: 0.003283 | Perplexity: 965.208074 | infonce: 0.000159
+Trainning Epoch:  11%|█         | 52/494 [16:57:13<143:57:34, 1172.52s/it]Trainning Epoch:  11%|█         | 52/494 [16:57:13<143:57:34, 1172.52s/it]2025-10-09 03:50:56,455 Stage: Train 0.5 | Epoch: 52 | Iter: 52800 | Total Loss: 0.007689 | Recon Loss: 0.005914 | Commit Loss: 0.003216 | Perplexity: 963.731207 | infonce: 0.000167
+2025-10-09 03:54:45,816 Stage: Train 0.5 | Epoch: 52 | Iter: 53000 | Total Loss: 0.007617 | Recon Loss: 0.005853 | Commit Loss: 0.003212 | Perplexity: 965.949536 | infonce: 0.000158
+2025-10-09 03:58:34,098 Stage: Train 0.5 | Epoch: 52 | Iter: 53200 | Total Loss: 0.007679 | Recon Loss: 0.005890 | Commit Loss: 0.003220 | Perplexity: 963.921189 | infonce: 0.000179
+2025-10-09 04:02:23,311 Stage: Train 0.5 | Epoch: 52 | Iter: 53400 | Total Loss: 0.007582 | Recon Loss: 0.005829 | Commit Loss: 0.003164 | Perplexity: 964.679661 | infonce: 0.000171
+2025-10-09 04:06:12,385 Stage: Train 0.5 | Epoch: 52 | Iter: 53600 | Total Loss: 0.007625 | Recon Loss: 0.005858 | Commit Loss: 0.003200 | Perplexity: 969.119208 | infonce: 0.000167
+Trainning Epoch:  11%|█         | 53/494 [17:16:36<143:18:03, 1169.80s/it]Trainning Epoch:  11%|█         | 53/494 [17:16:36<143:18:03, 1169.80s/it]2025-10-09 04:10:07,717 Stage: Train 0.5 | Epoch: 53 | Iter: 53800 | Total Loss: 0.007525 | Recon Loss: 0.005781 | Commit Loss: 0.003180 | Perplexity: 966.381964 | infonce: 0.000153
+2025-10-09 04:14:00,657 Stage: Train 0.5 | Epoch: 53 | Iter: 54000 | Total Loss: 0.007631 | Recon Loss: 0.005845 | Commit Loss: 0.003213 | Perplexity: 968.306984 | infonce: 0.000179
+2025-10-09 04:17:53,821 Stage: Train 0.5 | Epoch: 53 | Iter: 54200 | Total Loss: 0.007578 | Recon Loss: 0.005861 | Commit Loss: 0.003127 | Perplexity: 963.495028 | infonce: 0.000154
+2025-10-09 04:21:45,978 Stage: Train 0.5 | Epoch: 53 | Iter: 54400 | Total Loss: 0.007558 | Recon Loss: 0.005810 | Commit Loss: 0.003156 | Perplexity: 966.209569 | infonce: 0.000169
+2025-10-09 04:25:37,994 Stage: Train 0.5 | Epoch: 53 | Iter: 54600 | Total Loss: 0.007581 | Recon Loss: 0.005822 | Commit Loss: 0.003176 | Perplexity: 968.674709 | infonce: 0.000171
+Trainning Epoch:  11%|█         | 54/494 [17:36:18<143:24:13, 1173.30s/it]Trainning Epoch:  11%|█         | 54/494 [17:36:18<143:24:13, 1173.30s/it]2025-10-09 04:29:32,563 Stage: Train 0.5 | Epoch: 54 | Iter: 54800 | Total Loss: 0.007569 | Recon Loss: 0.005823 | Commit Loss: 0.003157 | Perplexity: 968.322198 | infonce: 0.000168
+2025-10-09 04:33:23,928 Stage: Train 0.5 | Epoch: 54 | Iter: 55000 | Total Loss: 0.007514 | Recon Loss: 0.005769 | Commit Loss: 0.003149 | Perplexity: 967.924855 | infonce: 0.000171
+2025-10-09 04:37:15,248 Stage: Train 0.5 | Epoch: 54 | Iter: 55200 | Total Loss: 0.007466 | Recon Loss: 0.005728 | Commit Loss: 0.003153 | Perplexity: 965.133011 | infonce: 0.000162
+2025-10-09 04:41:05,410 Stage: Train 0.5 | Epoch: 54 | Iter: 55400 | Total Loss: 0.007518 | Recon Loss: 0.005778 | Commit Loss: 0.003140 | Perplexity: 964.017828 | infonce: 0.000170
+2025-10-09 04:44:55,604 Stage: Train 0.5 | Epoch: 54 | Iter: 55600 | Total Loss: 0.007512 | Recon Loss: 0.005752 | Commit Loss: 0.003200 | Perplexity: 969.440375 | infonce: 0.000159
+Trainning Epoch:  11%|█         | 55/494 [17:55:50<143:01:19, 1172.85s/it]Trainning Epoch:  11%|█         | 55/494 [17:55:50<143:01:23, 1172.86s/it]2025-10-09 04:48:50,608 Stage: Train 0.5 | Epoch: 55 | Iter: 55800 | Total Loss: 0.007566 | Recon Loss: 0.005812 | Commit Loss: 0.003154 | Perplexity: 969.139738 | infonce: 0.000176
+2025-10-09 04:52:44,188 Stage: Train 0.5 | Epoch: 55 | Iter: 56000 | Total Loss: 0.007450 | Recon Loss: 0.005688 | Commit Loss: 0.003214 | Perplexity: 969.741035 | infonce: 0.000154
+2025-10-09 04:56:35,818 Stage: Train 0.5 | Epoch: 55 | Iter: 56200 | Total Loss: 0.007378 | Recon Loss: 0.005655 | Commit Loss: 0.003119 | Perplexity: 970.591487 | infonce: 0.000163
+2025-10-09 05:00:27,766 Stage: Train 0.5 | Epoch: 55 | Iter: 56400 | Total Loss: 0.007494 | Recon Loss: 0.005777 | Commit Loss: 0.003105 | Perplexity: 967.087041 | infonce: 0.000164
+2025-10-09 05:04:19,782 Stage: Train 0.5 | Epoch: 55 | Iter: 56600 | Total Loss: 0.007467 | Recon Loss: 0.005727 | Commit Loss: 0.003124 | Perplexity: 971.981792 | infonce: 0.000178
+Trainning Epoch:  11%|█▏        | 56/494 [18:15:30<142:57:58, 1175.06s/it]Trainning Epoch:  11%|█▏        | 56/494 [18:15:30<142:57:59, 1175.07s/it]2025-10-09 05:08:15,138 Stage: Train 0.5 | Epoch: 56 | Iter: 56800 | Total Loss: 0.007452 | Recon Loss: 0.005717 | Commit Loss: 0.003151 | Perplexity: 971.620402 | infonce: 0.000159
+2025-10-09 05:12:05,653 Stage: Train 0.5 | Epoch: 56 | Iter: 57000 | Total Loss: 0.007591 | Recon Loss: 0.005834 | Commit Loss: 0.003177 | Perplexity: 972.414789 | infonce: 0.000169
+2025-10-09 05:15:55,808 Stage: Train 0.5 | Epoch: 56 | Iter: 57200 | Total Loss: 0.007384 | Recon Loss: 0.005651 | Commit Loss: 0.003123 | Perplexity: 969.154260 | infonce: 0.000171
+2025-10-09 05:19:45,705 Stage: Train 0.5 | Epoch: 56 | Iter: 57400 | Total Loss: 0.007402 | Recon Loss: 0.005681 | Commit Loss: 0.003081 | Perplexity: 972.426320 | infonce: 0.000180
+2025-10-09 05:23:35,694 Stage: Train 0.5 | Epoch: 56 | Iter: 57600 | Total Loss: 0.009931 | Recon Loss: 0.006308 | Commit Loss: 0.004430 | Perplexity: 962.432241 | infonce: 0.001408
+Trainning Epoch:  12%|█▏        | 57/494 [18:35:00<142:27:44, 1173.60s/it]Trainning Epoch:  12%|█▏        | 57/494 [18:35:00<142:27:43, 1173.60s/it]2025-10-09 05:27:30,802 Stage: Train 0.5 | Epoch: 57 | Iter: 57800 | Total Loss: 0.007584 | Recon Loss: 0.005678 | Commit Loss: 0.003451 | Perplexity: 957.180355 | infonce: 0.000180
+2025-10-09 05:31:23,523 Stage: Train 0.5 | Epoch: 57 | Iter: 58000 | Total Loss: 0.007414 | Recon Loss: 0.005648 | Commit Loss: 0.003244 | Perplexity: 971.100687 | infonce: 0.000145
+2025-10-09 05:35:15,685 Stage: Train 0.5 | Epoch: 57 | Iter: 58200 | Total Loss: 0.007443 | Recon Loss: 0.005670 | Commit Loss: 0.003207 | Perplexity: 970.508361 | infonce: 0.000169
+2025-10-09 05:39:08,063 Stage: Train 0.5 | Epoch: 57 | Iter: 58400 | Total Loss: 0.007322 | Recon Loss: 0.005610 | Commit Loss: 0.003102 | Perplexity: 973.428056 | infonce: 0.000161
+2025-10-09 05:43:01,053 Stage: Train 0.5 | Epoch: 57 | Iter: 58600 | Total Loss: 0.007441 | Recon Loss: 0.005685 | Commit Loss: 0.003164 | Perplexity: 974.640100 | infonce: 0.000174
+Trainning Epoch:  12%|█▏        | 58/494 [18:54:42<142:25:46, 1176.02s/it]Trainning Epoch:  12%|█▏        | 58/494 [18:54:42<142:25:47, 1176.03s/it]2025-10-09 05:46:56,286 Stage: Train 0.5 | Epoch: 58 | Iter: 58800 | Total Loss: 0.007444 | Recon Loss: 0.005729 | Commit Loss: 0.003111 | Perplexity: 971.893763 | infonce: 0.000160
+2025-10-09 05:50:45,357 Stage: Train 0.5 | Epoch: 58 | Iter: 59000 | Total Loss: 0.007272 | Recon Loss: 0.005583 | Commit Loss: 0.003081 | Perplexity: 972.655616 | infonce: 0.000148
+W1009 05:54:22.495000 3827288 /data1/wxs/anaconda3/envs/llama_factory/lib/python3.10/site-packages/torch/distributed/elastic/multiprocessing/api.py:900] Sending process 3827698 closing signal SIGTERM
+E1009 05:54:22.913000 3827288 /data1/wxs/anaconda3/envs/llama_factory/lib/python3.10/site-packages/torch/distributed/elastic/multiprocessing/api.py:874] failed (exitcode: -9) local_rank: 0 (pid: 3827697) of binary: /home/wxs/anaconda3/envs/llama_factory/bin/python3.10
+Traceback (most recent call last):
+  File "/home/wxs/anaconda3/envs/llama_factory/bin/accelerate", line 8, in <module>
+    sys.exit(main())
+  File "/home/wxs/anaconda3/envs/llama_factory/lib/python3.10/site-packages/accelerate/commands/accelerate_cli.py", line 50, in main
+    args.func(args)
+  File "/home/wxs/anaconda3/envs/llama_factory/lib/python3.10/site-packages/accelerate/commands/launch.py", line 1189, in launch_command
+    multi_gpu_launcher(args)
+  File "/home/wxs/anaconda3/envs/llama_factory/lib/python3.10/site-packages/accelerate/commands/launch.py", line 815, in multi_gpu_launcher
+    distrib_run.run(args)
+  File "/home/wxs/anaconda3/envs/llama_factory/lib/python3.10/site-packages/torch/distributed/run.py", line 883, in run
+    elastic_launch(
+  File "/home/wxs/anaconda3/envs/llama_factory/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 139, in __call__
+    return launch_agent(self._config, self._entrypoint, list(args))
+  File "/home/wxs/anaconda3/envs/llama_factory/lib/python3.10/site-packages/torch/distributed/launcher/api.py", line 270, in launch_agent
+    raise ChildFailedError(
+torch.distributed.elastic.multiprocessing.errors.ChildFailedError: 
+========================================================
+train_vqvae_new.py FAILED
+--------------------------------------------------------
+Failures:
+  <NO_OTHER_FAILURES>
+--------------------------------------------------------
+Root Cause (first observed failure):
+[0]:
+  time      : 2025-10-09_05:54:22
+  host      : dbcloud
+  rank      : 0 (local_rank: 0)
+  exitcode  : -9 (pid: 3827697)
+  error_file: <N/A>
+  traceback : Signal 9 (SIGKILL) received by PID 3827697
+========================================================

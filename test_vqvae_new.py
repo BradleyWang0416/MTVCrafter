@@ -86,11 +86,15 @@ def get_args():
     parser.add_argument('--get_item_list', type=str, default=None)
 
     # VISION BACKBONE config. 如果在命令行中指定，则覆盖vision_config中的配置
-    parser.add_argument('--hrnet_output_level', type=int, default=None, help="int or list. 0,1,2,3 分别对应输出 [B,32,H/4,W/4], [B,64,H/8,W/8], [B,128,H/16,W/16], [B,256,H/32,W/32] 的特征")
+    parser.add_argument('--hrnet_output_level', type=str, default=None, help="int or list. 0,1,2,3 分别对应输出 [B,32,H/4,W/4], [B,64,H/8,W/8], [B,128,H/16,W/16], [B,256,H/32,W/32] 的特征")
     parser.add_argument('--vision_guidance_ratio', type=float, default=None)
     
     parser.add_argument('--downsample_time', type=str, default=None)
     parser.add_argument('--frame_upsample_rate', type=str, default=None)
+
+    parser.add_argument('--vision_guidance_where', type=str, default=None)
+    parser.add_argument('--vision_guidance_fuse', type=str, default=None)
+
     args = parser.parse_args()
 
     if isinstance(args.return_extra, str):
@@ -133,6 +137,10 @@ def test_vqvae(args):
         vision_config.model.hybrid.hrnet_output_level = args.hrnet_output_level
     if args.get('vision_guidance_ratio', None) is not None:
         vision_config.model.hybrid.vision_guidance_ratio = args.vision_guidance_ratio
+    if args.get('vision_guidance_where', None) is not None:
+        vision_config.model.hybrid.vision_guidance_where = args.vision_guidance_where
+    if args.get('vision_guidance_fuse', None) is not None:
+        vision_config.model.hybrid.vision_guidance_fuse = args.vision_guidance_fuse
     vqvae_config.vq.is_train = False
     vqvae = HYBRID_VQVAE(vqvae_config.encoder, vqvae_config.decoder, vqvae_config.vq, vision_config=vision_config, joint_data_type=args.joint_data_type)
     if vision_config.model.hybrid.vision_guidance_ratio > 0:

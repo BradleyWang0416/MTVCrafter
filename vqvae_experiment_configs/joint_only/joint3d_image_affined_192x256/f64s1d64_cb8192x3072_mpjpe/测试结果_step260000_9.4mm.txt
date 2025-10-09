@@ -1,0 +1,89 @@
+(llama_factory) wxs@dbcloud:~/MTVCrafter$ sh vqvae_experiment_configs/joint_only/joint3d_image_affined_192x256/f64s1d64_cb8192x3072_mpjpe/train.sh
+
+python test_vqvae_new.py --config vqvae_experiment_configs/joint_only/joint3d_image_affined_192x256/f64s1d64_cb8192x3072_mpjpe/config.yaml --resume_pth vqvae_experiment/joint_only/joint3d_image_affined_192x256/f64s1d64_cb8192x3072_mpjpe/models/checkpoint_epoch_346_step_260000 --batch_size 64 --nb_code 8192 --codebook_dim 3072 --loss_type mpjpe_millimeter --vqvae_type hybrid --num_frames 64 --sample_stride 1 --data_stride 64 --data_mode joint3d --hrnet_output_level 3 --vision_guidance_ratio 0
+Detected kernel version 5.4.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+Loading model...
+Loading model from vqvae_experiment/joint_only/joint3d_image_affined_192x256/f64s1d64_cb8192x3072_mpjpe/models/checkpoint_epoch_346_step_260000/model.safetensors
+Loaded model with missing keys: []
+Loaded model with unexpected keys: []
+Model loaded successfully.
+Loading dataset...
+Dataset loaded with 8088 samples.
+Testing: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 127/127 [03:43<00:00,  1.76s/it]
+
+--- Codebook Usage Statistics ---
+Total codes selected: 2199936
+Codebook size: 8192
+Number of activated codes: 2151 (26.26%)
+
+Top 5 most used codes:
+  - Code 4372: used 5596 times
+  - Code 7637: used 4769 times
+  - Code 5166: used 4661 times
+  - Code 6081: used 4568 times
+  - Code 5667: used 4541 times
+
+Top 5 least used codes (among activated):
+  - Code 216: used 2 times
+  - Code 6269: used 6 times
+  - Code 8007: used 7 times
+  - Code 5426: used 8 times
+  - Code 5966: used 11 times
+
+--- Test Results ---
+Average mpjpe_millimeter Reconstruction Loss: 9.350706
+
+
+
+
+
+---------------------------------------------------- 用 f16 d1 s16 测试 ----------------------------------------------------
+Dataset loaded with 32704 samples.
+--- Codebook Usage Statistics ---
+Total codes selected: 2223872
+Codebook size: 8192
+Number of activated codes: 2151 (26.26%)
+
+Top 5 most used codes:
+  - Code 4372: used 5685 times
+  - Code 7637: used 4829 times
+  - Code 5166: used 4713 times
+  - Code 6081: used 4610 times
+  - Code 5667: used 4594 times
+
+Top 5 least used codes (among activated):
+  - Code 216: used 2 times
+  - Code 6269: used 6 times
+  - Code 8007: used 7 times
+  - Code 5426: used 8 times
+  - Code 5966: used 11 times
+
+--- Test Results ---
+Average mpjpe_millimeter Reconstruction Loss: 9.350845
+
+
+
+---------------------------------------------------- 用 f128 d1 s128 测试 ----------------------------------------------------
+Dataset loaded with 3992 samples.
+
+--- Codebook Usage Statistics ---
+Total codes selected: 2171648
+Codebook size: 8192
+Number of activated codes: 2151 (26.26%)
+
+Top 5 most used codes:
+  - Code 4372: used 5534 times
+  - Code 7637: used 4723 times
+  - Code 5166: used 4588 times
+  - Code 6081: used 4489 times
+  - Code 5667: used 4489 times
+
+Top 5 least used codes (among activated):
+  - Code 216: used 2 times
+  - Code 6235: used 6 times
+  - Code 6269: used 6 times
+  - Code 8007: used 7 times
+  - Code 5426: used 8 times
+
+--- Test Results ---
+Average mpjpe_millimeter Reconstruction Loss: 9.347173
