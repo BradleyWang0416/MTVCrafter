@@ -235,7 +235,7 @@ def train_vqvae(
 
             if nb_iter % print_iter == 0 and accelerator.is_main_process:
                 if args.get('vision_guidance_extraLoss', None) is not None:
-                    logger.info(f'Stage: {stage} | Epoch: {epoch} | Iter: {nb_iter} | Total Loss: {(total_loss / print_iter):.6f} | Recon Loss: {(recon_loss / print_iter):.6f} | Commit Loss: {(commit_loss / print_iter):.6f} | Perplexity: {(total_preplexity / print_iter):.6f} | {args.get('vision_guidance_extraLoss', None)}: {(EXTRA_LOSS / print_iter):.6f}')
+                    logger.info(f"Stage: {stage} | Epoch: {epoch} | Iter: {nb_iter} | Total Loss: {(total_loss / print_iter):.6f} | Recon Loss: {(recon_loss / print_iter):.6f} | Commit Loss: {(commit_loss / print_iter):.6f} | Perplexity: {(total_preplexity / print_iter):.6f} | {args.get('vision_guidance_extraLoss', None)}: {(EXTRA_LOSS / print_iter):.6f}")
                     total_loss, recon_loss, commit_loss, total_preplexity = 0, 0, 0, 0
                     EXTRA_LOSS = 0
                 else:
