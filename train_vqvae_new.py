@@ -169,7 +169,7 @@ def train_vqvae(
     recon_loss = 0
     commit_loss = 0
     total_loss = 0
-    if args.vision_guidance_extraLoss is not None:
+    if args.get('vision_guidance_extraLoss', None) is not None:
         EXTRA_LOSS = 0
     total_preplexity = 0
     nb_iter = resume_iter
@@ -200,7 +200,7 @@ def train_vqvae(
 
             tuple_return  = vqvae(batch)
             # [B,T,17,3]
-            if args.vision_guidance_extraLoss is not None:
+            if args.get('vision_guidance_extraLoss', None) is not None:
                 recon_data, loss_commit, perplexity, gt_data, extra_loss = tuple_return
             else:
                 recon_data, loss_commit, perplexity, gt_data = tuple_return
@@ -217,7 +217,7 @@ def train_vqvae(
 
             reconstruction_loss = loss_fn(recon_data, gt_data)
             loss = reconstruction_loss + commit_ratio * loss_commit
-            if args.vision_guidance_extraLoss is not None:
+            if args.get('vision_guidance_extraLoss', None) is not None:
                 loss = loss + extra_loss    # loss weight applied in forward
                 EXTRA_LOSS += extra_loss.item()
             recon_loss += reconstruction_loss.item()
@@ -234,8 +234,8 @@ def train_vqvae(
             torch.cuda.synchronize()
 
             if nb_iter % print_iter == 0 and accelerator.is_main_process:
-                if args.vision_guidance_extraLoss is not None:
-                    logger.info(f'Stage: {stage} | Epoch: {epoch} | Iter: {nb_iter} | Total Loss: {(total_loss / print_iter):.6f} | Recon Loss: {(recon_loss / print_iter):.6f} | Commit Loss: {(commit_loss / print_iter):.6f} | Perplexity: {(total_preplexity / print_iter):.6f} | {args.vision_guidance_extraLoss}: {(EXTRA_LOSS / print_iter):.6f}')
+                if args.get('vision_guidance_extraLoss', None) is not None:
+                    logger.info(f'Stage: {stage} | Epoch: {epoch} | Iter: {nb_iter} | Total Loss: {(total_loss / print_iter):.6f} | Recon Loss: {(recon_loss / print_iter):.6f} | Commit Loss: {(commit_loss / print_iter):.6f} | Perplexity: {(total_preplexity / print_iter):.6f} | {args.get('vision_guidance_extraLoss', None)}: {(EXTRA_LOSS / print_iter):.6f}')
                     total_loss, recon_loss, commit_loss, total_preplexity = 0, 0, 0, 0
                     EXTRA_LOSS = 0
                 else:
@@ -408,7 +408,7 @@ if __name__ == '__main__':
     if args.get('vision_guidance_fuse', None) is not None:
         vision_config.model.hybrid.vision_guidance_fuse = args.vision_guidance_fuse
     if args.get('vision_guidance_extraLoss', None) is not None:
-        vision_config.model.hybrid.vision_guidance_extraLoss = args.vision_guidance_extraLoss
+        vision_config.model.hybrid.vision_guidance_extraLoss = args.get('vision_guidance_extraLoss', None)
         
 
 
