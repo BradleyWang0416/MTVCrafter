@@ -463,6 +463,11 @@ class HYBRID_VQVAE(nn.Module):
             # [B, T, 17, 1920]
 
             # 调整为 [B, C, T, J] 以适配你的 VisionEncoder
+
+
+            if not hasattr(self, f'ada_sample_successfully_applied'):
+                print("Adaptive sampling applied successfully.")
+                setattr(self, f'ada_sample_successfully_applied', True)
             return video_ref_features.permute(0, 3, 1, 2).contiguous()
 
 

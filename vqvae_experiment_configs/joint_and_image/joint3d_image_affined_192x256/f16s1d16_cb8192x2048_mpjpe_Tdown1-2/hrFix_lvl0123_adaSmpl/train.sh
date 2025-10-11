@@ -11,7 +11,7 @@ CONFIG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f
 LOG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/train.log"
 
 if [ "$mode" = "test" ]; then
-    RESUME_PATH="vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/models/checkpoint_epoch_60_step_100000"
+    RESUME_PATH="vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/models/checkpoint_epoch_178_step_220000"
     LOSS_TYPE=mpjpe_millimeter     # l1, mpjpe, mpjpe_millimeter
     BATCH_SIZE=32
 else

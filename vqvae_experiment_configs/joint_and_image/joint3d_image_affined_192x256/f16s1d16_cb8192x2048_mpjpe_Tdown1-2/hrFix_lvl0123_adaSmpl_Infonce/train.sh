@@ -5,7 +5,7 @@ mode=test
 
 vision_guidance_where=enc
 vision_guidance_fuse=ada_sample
-# vision_guidance_extraLoss=infonce         # 测试时不需要
+vision_guidance_extraLoss=infonce
 
 EXP_NAME="joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce"
 CONFIG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl_Infonce/config.yaml"
@@ -68,7 +68,8 @@ if [ "$mode" = "debug" ]; then
         $FIX_WEIGHTS_ARG \
         --resume_pth "${RESUME_PATH}" \
         --vision_guidance_where ${vision_guidance_where} \
-        --vision_guidance_fuse ${vision_guidance_fuse}
+        --vision_guidance_fuse ${vision_guidance_fuse} \
+        --vision_guidance_extraLoss ${vision_guidance_extraLoss}
 elif [ "$mode" = "test" ]; then
         # -m debugpy --listen 5680 --wait-for-client \
         # accelerate launch --num_processes 5 \
@@ -91,7 +92,8 @@ elif [ "$mode" = "test" ]; then
         --downsample_time "[1,2]" \
         --frame_upsample_rate "[2.0,1.0]" \
         --vision_guidance_where ${vision_guidance_where} \
-        --vision_guidance_fuse ${vision_guidance_fuse}
+        --vision_guidance_fuse ${vision_guidance_fuse} \
+        --vision_guidance_extraLoss ${vision_guidance_extraLoss}
 else
         # python -u train_vqvae_new.py \
     CUDA_VISIBLE_DEVICES=0,1 \
@@ -118,5 +120,6 @@ else
         --resume_pth "${RESUME_PATH}" \
         --vision_guidance_where ${vision_guidance_where} \
         --vision_guidance_fuse ${vision_guidance_fuse} \
+        --vision_guidance_extraLoss ${vision_guidance_extraLoss} \
         > ${LOG} &
 fi
