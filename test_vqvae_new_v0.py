@@ -95,9 +95,7 @@ def get_args():
     parser.add_argument('--vision_guidance_where', type=str, default=None)
     parser.add_argument('--vision_guidance_fuse', type=str, default=None)
 
-    args, unknown = parser.parse_known_args()
-    if unknown:
-        print(f"Warning: Unknown command-line args will be ignored: {unknown}")
+    args = parser.parse_args()
 
     if isinstance(args.return_extra, str):
         args.return_extra = ast.literal_eval(args.return_extra)
@@ -323,7 +321,6 @@ def test_vqvae(args):
     global_codebook_usage = codebook_usage.clone()
     accelerator.reduce(global_codebook_usage, reduction="sum")
 
-
     if accelerator.is_main_process:
         # --- 5. Analyze Codebook Usage ---
         print("\n--- Codebook Usage Statistics ---")
@@ -364,172 +361,6 @@ def test_vqvae(args):
                 print(f"\nTop {bottom_k} least used codes (among activated):")
                 for i in range(bottom_k):
                     print(f"  - Code {original_indices[i].item()}: used {bottom_counts[i].item()} times")
-
-
-
-    if accelerator.is_main_process:
-        # ==================================================================
-        # 实验 (a): 码本使用率 (Code Usage Rates)
-        # ==================================================================
-        print("\n--- [Experiment (a)] Codebook Usage Rate Analysis ---")
-        
-        # global_codebook_usage = global_codebook_usage.cpu()
-        total_codes_selected = global_codebook_usage.sum().item()
-        num_codes_total = args.nb_code
-        
-        if total_codes_selected == 0:
-            print("Warning: No codes were selected during the test. Cannot analyze usage.")
-        else:
-            # 计算每个码的使用频率
-            usage_freq = global_codebook_usage / total_codes_selected
-            
-            # 定义阈值
-            # 注意：这里的百分比是相对于总使用次数的，与论文中可能不同，但原理一致
-            # 我们可以定义一个非常小的阈值来代表“几乎未使用”
-            underutilized_threshold = 0.0001  # 小于 0.01% 的使用频率视为低频
-            frequent_threshold = 0.01        # 大于 1% 的使用频率视为高频
-
-            # 分类
-            is_underutilized = (usage_freq > 0) & (usage_freq < underutilized_threshold)
-            is_frequent = usage_freq >= frequent_threshold
-            is_active = (usage_freq >= underutilized_threshold) & (usage_freq < frequent_threshold)
-            is_dead = global_codebook_usage == 0
-
-            # 统计
-            num_underutilized = is_underutilized.sum().item()
-            num_active = is_active.sum().item()
-            num_frequent = is_frequent.sum().item()
-            num_dead = is_dead.sum().item()
-
-            # 打印结果
-            print(f"Total codes selected during test: {total_codes_selected}")
-            print(f"Total codebook size: {num_codes_total}")
-            print("-" * 30)
-            print(f"Dead Codes (0 usage): {num_dead} ({num_dead / num_codes_total:.2%})")
-            print(f"Underutilized Codes (< {underutilized_threshold:.2%}): {num_underutilized} ({num_underutilized / num_codes_total:.2%})")
-            print(f"Active Codes: {num_active} ({num_active / num_codes_total:.2%})")
-            print(f"Frequent Codes (>= {frequent_threshold:.2%}): {num_frequent} ({num_frequent / num_codes_total:.2%})")
-            print("-" * 30)
-
-        # --- 原有的详细统计 (仍然很有用) ---
-        num_codes_activated = (global_codebook_usage > 0).sum().item()
-        usage_percentage = (num_codes_activated / num_codes_total) * 100
-        print(f"Number of activated codes (total non-dead): {num_codes_activated} ({usage_percentage:.2f}%)")
-
-        top_k = min(5, num_codes_activated)
-        if top_k > 0:
-            top_counts, top_indices = torch.topk(global_codebook_usage, k=top_k)
-            print(f"\nTop {top_k} most used codes:")
-            for i in range(top_k):
-                print(f"  - Code {top_indices[i].item()}: used {top_counts[i].item()} times ({top_counts[i]/total_codes_selected:.2%})")
-
-        # ==================================================================
-        # 实验 (b): 码本多样性 (Pairwise Code Similarity)
-        # ==================================================================
-        print("\n--- [Experiment (b)] Pairwise Code Similarity Analysis ---")
-        
-        # 导入绘图库
-        try:
-            import matplotlib.pyplot as plt
-            import seaborn as sns
-            from torch.nn import functional as F
-            can_plot = True
-        except ImportError:
-            print("Warning: matplotlib or seaborn not found. Skipping plot generation. Please run 'pip install matplotlib seaborn'.")
-            can_plot = False
-
-        # 提取码本权重
-        # 注意：如果模型被 accelerator.prepare 包装，需要用 .module 访问原始模型
-        unwrapped_model = accelerator.unwrap_model(vqvae)
-        codebook_weights = unwrapped_model.vq.codebook.data # [nb_code, code_dim]
-
-
-
-
-
-
-
-        codebook_weights = codebook_weights[:, :1024]
-        print(codebook_weights.shape)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        # 归一化码本向量 (计算余弦相似度的第一步)
-        codebook_weights_norm = F.normalize(codebook_weights, p=2, dim=1)
-
-        # 计算成对余弦相似度矩阵
-        # (N, D) @ (D, N) -> (N, N)
-        similarity_matrix = torch.matmul(codebook_weights_norm, codebook_weights_norm.t())
-
-        # 提取上三角矩阵中的非对角线元素
-        # 这是所有不重复的成对相似度值
-        indices = torch.triu_indices(num_codes_total, num_codes_total, offset=1)
-        pairwise_similarities = similarity_matrix[indices[0], indices[1]].cpu().numpy()
-
-        # 打印统计结果
-        mean_similarity = np.mean(pairwise_similarities)
-        std_similarity = np.std(pairwise_similarities)
-        abs_mean_similarity = np.mean(np.abs(pairwise_similarities))
-
-        print(f"Number of pairwise comparisons: {len(pairwise_similarities)}")
-        print(f"Mean cosine similarity: {mean_similarity:.6f}")
-        print(f"Std dev of similarity: {std_similarity:.6f}")
-        print(f"Mean of absolute similarity: {abs_mean_similarity:.6f}")
-
-        # 绘制直方图
-        if can_plot:
-
-            plt.figure(figsize=(10, 8))
-            pie_labels = ['Dead', 'Underutilized', 'Active', 'Frequent']
-            pie_sizes = [num_dead, num_underutilized, num_active, num_frequent]
-            
-            # 过滤掉数量为0的类别，避免在图上显示0%
-            filtered_labels = [label for i, label in enumerate(pie_labels) if pie_sizes[i] > 0]
-            filtered_sizes = [size for size in pie_sizes if size > 0]
-
-            if filtered_sizes:
-                plt.pie(filtered_sizes, labels=filtered_labels, autopct='%1.1f%%', startangle=140, textprops={'fontsize': 12})
-                plt.title('Codebook Usage Rate Distribution', fontsize=16)
-                plt.axis('equal')  # 保证饼图是正圆形
-
-                # 保存图像到项目目录
-                pie_plot_filename = os.path.join(os.path.dirname(args.resume_pth), 'codebook_usage_pie.png')
-                try:
-                    plt.savefig(pie_plot_filename)
-                    print(f"\nUsage rate pie chart saved to: {pie_plot_filename}")
-                except Exception as e:
-                    print(f"\nError saving pie chart: {e}")
-                plt.close()
-
-
-                
-            plt.figure(figsize=(10, 6))
-            sns.histplot(pairwise_similarities, bins=100, kde=True)
-            plt.title('Distribution of Pairwise Code Similarities')
-            plt.xlabel('Cosine Similarity')
-            plt.ylabel('Frequency')
-            plt.grid(True)
-            
-            # 保存图像到项目目录
-            plot_filename = os.path.join(os.path.dirname(args.resume_pth), 'codebook_similarity.png')
-            try:
-                plt.savefig(plot_filename)
-                print(f"\nSimilarity distribution plot saved to: {plot_filename}")
-            except Exception as e:
-                print(f"\nError saving plot: {e}")
-            plt.close()
-    
 
 
 

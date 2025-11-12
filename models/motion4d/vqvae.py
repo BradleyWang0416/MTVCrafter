@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
+import sys
 
 # from typing import Any, Dict, Optional, Tuple, Union
 # from diffusers.models.attention import Attention
@@ -125,6 +126,19 @@ class VectorQuantizer(nn.Module):
         # [bs * f * j, dim=3072]
         # Calculate latent code x_l
         k_w = self.codebook.t()
+
+
+        if '--disable_vision' in sys.argv and not self.training:
+            distance = torch.sum(x ** 2, dim=-1, keepdim=True) - 2 * torch.matmul(x, k_w[:x.shape[-1]]) + torch.sum(k_w[:x.shape[-1]] ** 2, dim=0, keepdim=True)
+            if not hasattr(self, 'disable_vision_codebook'):
+                print("===============================================================")
+                print('codebook: ', self.codebook.t().shape, '\t feat shape: ', x.shape)
+                print("===============================================================")
+                self.disable_vision_codebook = True
+            _, code_idx = torch.min(distance, dim=-1)
+            return code_idx
+
+
         distance = torch.sum(x ** 2, dim=-1, keepdim=True) - 2 * torch.matmul(x, k_w) + torch.sum(k_w ** 2, dim=0, keepdim=True)
         _, code_idx = torch.min(distance, dim=-1)
         return code_idx
@@ -139,7 +153,10 @@ class VectorQuantizer(nn.Module):
         # Preprocess
         x = self.preprocess(x)
         # return x.view(bs, f*j, c).contiguous(), None
-        assert x.shape[-1] == self.code_dim
+        if '--disable_vision' in sys.argv and not self.training:
+            pass
+        else:
+            assert x.shape[-1] == self.code_dim
 
         # Init codebook if not inited
         if not self.init and self.is_train:
@@ -154,10 +171,15 @@ class VectorQuantizer(nn.Module):
             perplexity = self.update_codebook(x, code_idx)
         
         # Loss
-        commit_loss = F.mse_loss(x, x_d.detach())
 
         # Passthrough
-        x_d = x + (x_d - x).detach()
+        if '--disable_vision' in sys.argv and not self.training:
+            commit_loss = 0
+            x_d = x_d
+            c = x_d.shape[-1]
+        else:
+            commit_loss = F.mse_loss(x, x_d.detach())
+            x_d = x + (x_d - x).detach()
 
         if return_vq:
             return x_d.view(bs, f*j, c).contiguous(), commit_loss

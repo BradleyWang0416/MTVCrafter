@@ -1,23 +1,24 @@
-# mode=debug
+mode=debug
 # mode=train
-mode=test
+# mode=test
+
+EXP_NAME="joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5_qwen2.5vl"
 
 
-vision_guidance_where=enc
-vision_guidance_fuse=ada_sample
+CONFIG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5_qwen2.5vl/config.yaml"
 
-EXP_NAME="joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl"
-CONFIG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/config.yaml"
-LOG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/train.log"
+
+
+LOG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5_qwen2.5vl/train.log"
 
 if [ "$mode" = "test" ]; then
-    RESUME_PATH="vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/models/checkpoint_epoch_316_step_360000"
+    RESUME_PATH=""
     LOSS_TYPE=mpjpe_millimeter     # l1, mpjpe, mpjpe_millimeter
     BATCH_SIZE=32
 else
     RESUME_PATH=""
     LOSS_TYPE=mpjpe     # l1, mpjpe
-    BATCH_SIZE=48
+    BATCH_SIZE=64
 fi
 
 
@@ -31,7 +32,7 @@ DATA_STRIDE=16
 
 
 VQVAE_TYPE=hybrid  # base, hybrid
-HRNET_OUTPUT_LEVEL="[0,1,2,3]"    # int or list. 0,1,2,3 分别对应输出 [B,32,H/4,W/4], [B,64,H/8,W/8], [B,128,H/16,W/16], [B,256,H/32,W/32] 的特征
+HRNET_OUTPUT_LEVEL=3    # int or list. 0,1,2,3 分别对应输出 [B,32,H/4,W/4], [B,64,H/8,W/8], [B,128,H/16,W/16], [B,256,H/32,W/32] 的特征
 VISION_GUIDANCE_RATIO=0.5
 
 FIX_WEIGHTS=True
@@ -44,7 +45,7 @@ else
 fi
 
 if [ "$mode" = "debug" ]; then
-    CUDA_VISIBLE_DEVICES=6 \
+    CUDA_VISIBLE_DEVICES=7 \
         python \
         -m debugpy --listen 5678 --wait-for-client \
         train_vqvae_new.py \
@@ -65,12 +66,10 @@ if [ "$mode" = "debug" ]; then
         --downsample_time "[1,2]" \
         --frame_upsample_rate "[2.0,1.0]" \
         $FIX_WEIGHTS_ARG \
-        --resume_pth "${RESUME_PATH}" \
-        --vision_guidance_where ${vision_guidance_where} \
-        --vision_guidance_fuse ${vision_guidance_fuse}
+        --resume_pth "${RESUME_PATH}"
 elif [ "$mode" = "test" ]; then
+        # -m debugpy --listen 5680 --wait-for-client \
         # accelerate launch --num_processes 5 \
-        # -m debugpy --listen 5678 --wait-for-client \
     CUDA_VISIBLE_DEVICES=3 \
         python \
         test_vqvae_new.py \
@@ -88,9 +87,7 @@ elif [ "$mode" = "test" ]; then
         --hrnet_output_level ${HRNET_OUTPUT_LEVEL} \
         --vision_guidance_ratio ${VISION_GUIDANCE_RATIO} \
         --downsample_time "[1,2]" \
-        --frame_upsample_rate "[2.0,1.0]" \
-        --vision_guidance_where ${vision_guidance_where} \
-        --vision_guidance_fuse ${vision_guidance_fuse}
+        --frame_upsample_rate "[2.0,1.0]"
 else
         # python -u train_vqvae_new.py \
     CUDA_VISIBLE_DEVICES=6,7 \
@@ -115,7 +112,5 @@ else
         --frame_upsample_rate "[2.0,1.0]" \
         $FIX_WEIGHTS_ARG \
         --resume_pth "${RESUME_PATH}" \
-        --vision_guidance_where ${vision_guidance_where} \
-        --vision_guidance_fuse ${vision_guidance_fuse} \
         > ${LOG} &
 fi

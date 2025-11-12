@@ -3,7 +3,15 @@
 mode=test
 
 EXP_NAME="joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5"
-CONFIG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/config.yaml"
+
+
+
+
+# CONFIG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/config.yaml"
+CONFIG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/config_3dpw.yaml"
+
+
+
 LOG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl3_ratio0.5/train.log"
 
 if [ "$mode" = "test" ]; then
@@ -40,7 +48,7 @@ else
 fi
 
 if [ "$mode" = "debug" ]; then
-    CUDA_VISIBLE_DEVICES=5 \
+    CUDA_VISIBLE_DEVICES=7 \
         python \
         -m debugpy --listen 5678 --wait-for-client \
         train_vqvae_new.py \
@@ -65,6 +73,7 @@ if [ "$mode" = "debug" ]; then
 elif [ "$mode" = "test" ]; then
         # -m debugpy --listen 5680 --wait-for-client \
         # accelerate launch --num_processes 5 \
+        # -m debugpy --listen 5678 --wait-for-client \
     CUDA_VISIBLE_DEVICES=3 \
         python \
         test_vqvae_new.py \

@@ -1,0 +1,24 @@
+num_frames: 16
+sample_stride: 1
+data_stride: 16
+data_mode: joint3d
+
+load_data_file: /data2/wxs/DATASETS/Human3.6M_for_MotionBERT/h36m_sh_conf_cam_source_final_wImgPath_wJ3dCam_wJ2dCpn.pkl
+load_image_source_file: /data2/wxs/DATASETS/Human3.6M_for_MotionBERT/images_source.pkl
+load_bbox_file: /data2/wxs/DATASETS/Human3.6M_for_MotionBERT/bboxes_xyxy.pkl
+load_text_source_file: ''
+return_extra: [[image]]
+
+# data preprocessing config
+normalize: anisotropic
+
+# image config
+filter_invalid_images: True
+processed_image_shape: [192,256]
+backbone: qwen2.5vl
+
+# dataloader config
+get_item_list: [factor_2_5d,
+                video_rgb, joint3d_image_affined, joint3d_image_affined_normed, joint3d_image_affined_scale, joint3d_image_affined_transl,
+                'affine_trans', 'affine_trans_inv',
+                'joint_2_5d_image']

@@ -1,0 +1,64 @@
+(llama_factory) wxs@dbcloud:~/MTVCrafter$ sh vqvae_experiment_configs/joint_and_image/joint3d_image_affined_448x448/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/train.sh
+
+python test_vqvae_new.py --config vqvae_experiment_configs/joint_and_image/joint3d_image_affined_448x448/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/config_3dpw.yaml --resume_pth vqvae_experiment/joint_and_image/joint3d_image_affined_448x448/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/models/checkpoint_epoch_165_step_500000 --batch_size 16 --nb_code 8192 --codebook_dim 2048 --loss_type mpjpe_millimeter --vqvae_type hybrid --num_frames 16 --sample_stride 1 --data_stride 16 --data_mode joint3d --hrnet_output_level [0,1,2,3] --vision_guidance_ratio 0.5 --downsample_time [1,2] --frame_upsample_rate [2.0,1.0] --vision_guidance_where enc --vision_guidance_fuse ada_sample
+Detected kernel version 5.4.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+Loading model...
+^[[ALoading model from vqvae_experiment/joint_and_image/joint3d_image_affined_448x448/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/models/checkpoint_epoch_165_step_500000/model.safetensors
+Loaded model with missing keys: []
+Loaded model with unexpected keys: []
+Model loaded successfully.
+Loading dataset...
+Dataset loaded with 2493 samples.
+Testing:   0%|                                                                                                                                                                                                                     | 0/156 [00:00<?, ?it/s]Adaptive sampling applied successfully.
+Testing: 100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 156/156 [02:55<00:00,  1.13s/it]
+
+--- Codebook Usage Statistics ---
+Total codes selected: 339048
+Codebook size: 8192
+Number of activated codes: 4998 (61.01%)
+
+Top 5 most used codes:
+  - Code 3329: used 2114 times
+  - Code 1466: used 2110 times
+  - Code 2341: used 1255 times
+  - Code 1928: used 1175 times
+  - Code 4798: used 1061 times
+
+Top 5 least used codes (among activated):
+  - Code 2906: used 1 times
+  - Code 1705: used 1 times
+  - Code 2988: used 1 times
+  - Code 3190: used 1 times
+  - Code 1176: used 1 times
+
+--- [Experiment (a)] Codebook Usage Rate Analysis ---
+Total codes selected during test: 339048
+Total codebook size: 8192
+------------------------------
+Dead Codes (0 usage): 3194 (38.99%)
+Underutilized Codes (< 0.01%): 1277 (15.59%)
+Active Codes: 3721 (45.42%)
+Frequent Codes (>= 1.00%): 0 (0.00%)
+------------------------------
+Number of activated codes (total non-dead): 4998 (61.01%)
+
+Top 5 most used codes:
+  - Code 3329: used 2114 times (0.62%)
+  - Code 1466: used 2110 times (0.62%)
+  - Code 2341: used 1255 times (0.37%)
+  - Code 1928: used 1175 times (0.35%)
+  - Code 4798: used 1061 times (0.31%)
+
+--- [Experiment (b)] Pairwise Code Similarity Analysis ---
+torch.Size([8192, 1024])
+Number of pairwise comparisons: 33550336
+Mean cosine similarity: 0.028620
+Std dev of similarity: 0.469198
+Mean of absolute similarity: 0.313956
+
+Usage rate pie chart saved to: vqvae_experiment/joint_and_image/joint3d_image_affined_448x448/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/models/codebook_usage_pie.png
+
+Similarity distribution plot saved to: vqvae_experiment/joint_and_image/joint3d_image_affined_448x448/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/models/codebook_similarity.png
+
+--- Test Results ---
+Average mpjpe_millimeter Reconstruction Loss: 22.461261

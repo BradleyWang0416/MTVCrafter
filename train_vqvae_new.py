@@ -13,6 +13,8 @@ from tqdm import tqdm
 from accelerate import Accelerator
 from accelerate.utils import set_seed, release_memory, ProjectConfiguration, DistributedDataParallelKwargs
 from safetensors.torch import load_file as load_safetensors
+import joblib
+from PIL import Image
 
 from config.vision_backbone import config as vision_config
 from config.vqvae import vqvae_config
@@ -399,6 +401,8 @@ if __name__ == '__main__':
     #     decoder = Decoder(**vqvae_config.decoder)
     #     vqvae = SMPL_VQVAE(encoder, decoder, vq).train()
     # elif args.vqvae_type == 'hybrid':
+    if args.get('backbone', None) is not None:
+        vision_config.model.backbone.type = args.backbone
     if args.get('hrnet_output_level', None) is not None:
         vision_config.model.hybrid.hrnet_output_level = args.hrnet_output_level
     if args.get('vision_guidance_ratio', None) is not None:
@@ -433,6 +437,40 @@ if __name__ == '__main__':
             
             if all(not p.requires_grad for p in vqvae.vision_backbone.parameters()):
                 vqvae.vision_backbone.eval()
+
+
+
+
+    # project_dir = args.project_dir
+    # video_processed_presave_file_path = os.path.join(project_dir, 'video_processed.pkl')
+    # if os.path.exists(video_processed_presave_file_path):
+    #     video_processed_presave = joblib.load(video_processed_presave_file_path)
+    # else:
+    #     video_processed_presave = dict()
+
+    #     for data_id, data_item in enumerate(tqdm(dataset)):
+    #         video_st, video_ed = data_item['slice_id'][[0,-1]].tolist()
+    #         video_processed_identifier = (video_st, video_ed)
+
+    #         img_paths = data_item['video_rgb']
+    #         VIDEO = []
+    #         for img_id in range(img_paths.shape[0]):
+    #             img = Image.open(img_paths[img_id])
+    #             if img.mode != "RGB":
+    #                 img = img.convert('RGB')
+    #             VIDEO.append(img)
+    #         video_dict = vqvae.vision_processor(VIDEO)
+
+    #         video_processed_presave[video_processed_identifier] = video_dict
+
+    #     assert len(video_processed_presave) == len(dataset)
+    #     joblib.dump(video_processed_presave, video_processed_presave_file_path)
+    #     exit(0)
+    
+    # vqvae.video_processed_presave = video_processed_presave
+
+
+
 
     # 统计可学习和不可学习参数量
     def count_parameters(model):

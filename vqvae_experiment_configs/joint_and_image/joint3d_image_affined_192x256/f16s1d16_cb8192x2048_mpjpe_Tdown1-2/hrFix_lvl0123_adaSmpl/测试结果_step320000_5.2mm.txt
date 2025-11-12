@@ -1,0 +1,35 @@
+(llama_factory) wxs@dbcloud:~/MTVCrafter$ sh vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/train.sh
+
+python test_vqvae_new.py --config vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/config.yaml --resume_pth vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/models/checkpoint_epoch_277_step_320000 --batch_size 32 --nb_code 8192 --codebook_dim 2048 --loss_type mpjpe_millimeter --vqvae_type hybrid --num_frames 16 --sample_stride 1 --data_stride 16 --data_mode joint3d --hrnet_output_level [0,1,2,3] --vision_guidance_ratio 0.5 --downsample_time [1,2] --frame_upsample_rate [2.0,1.0] --vision_guidance_where enc --vision_guidance_fuse ada_sample
+Detected kernel version 5.4.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+Loading model...
+Loading model from vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/models/checkpoint_epoch_277_step_320000/model.safetensors
+Loaded model with missing keys: []
+Loaded model with unexpected keys: []
+Model loaded successfully.
+Loading dataset...
+Dataset loaded with 32704 samples.
+Testing:   0%|                                                                                                                                                                                                                                | 0/1022 [00:00<?, ?it/s]Adaptive sampling applied successfully.
+Testing: 100%|█████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 1022/1022 [10:20<00:00,  1.65it/s]
+
+--- Codebook Usage Statistics ---
+Total codes selected: 4447744
+Codebook size: 8192
+Number of activated codes: 8149 (99.48%)
+
+Top 5 most used codes:
+  - Code 4208: used 2544 times
+  - Code 7615: used 2538 times
+  - Code 324: used 2492 times
+  - Code 3216: used 2480 times
+  - Code 6646: used 2459 times
+
+Top 5 least used codes (among activated):
+  - Code 2255: used 1 times
+  - Code 2152: used 1 times
+  - Code 2805: used 1 times
+  - Code 3349: used 1 times
+  - Code 407: used 1 times
+
+--- Test Results ---
+Average mpjpe_millimeter Reconstruction Loss: 5.242116

@@ -263,6 +263,7 @@ class HYBRID_VQVAE(nn.Module):
             if self.vision_guidance_fuse == 'ada_sample':
                 code_dim_vision = int(vq.code_dim * self.vision_guidance_ratio)
                 code_dim_skel = vq.code_dim - code_dim_vision
+                self.code_dim_skel = code_dim_skel
 
                 encoder.out_channels = code_dim_skel
                 ####################### creating modules #######################
@@ -491,11 +492,26 @@ class HYBRID_VQVAE(nn.Module):
         joint_gt = batch_dict[self.joint_data_type].clone()
         joint3d_video = batch_dict[self.joint_data_type]     # [B,T,17,3]
 
-        if self.vision_guidance_ratio > 0 or self.vision_guidance_ratio == -1 or self.vision_guidance_ratio == -2:
-            video_rgb = batch_dict.video_rgb  # [B,T,H,W,3]
-            vision_feats = self.get_vision_feats(joint3d_video, video_rgb)
-        else:
+
+
+
+
+        if '--disable_vision' in sys.argv and not self.training:
             vision_feats = None
+        else:
+
+
+            if self.vision_guidance_ratio > 0 or self.vision_guidance_ratio == -1 or self.vision_guidance_ratio == -2:
+                video_rgb = batch_dict.video_rgb  # [B,T,H,W,3]
+                vision_feats = self.get_vision_feats(joint3d_video, video_rgb)
+            else:
+                vision_feats = None
+
+
+
+
+
+
 
         joint_feats = joint3d_video.permute(0, 3, 1, 2)   # [B,49,17,3] -> [B,3,49,17]
         indices = None

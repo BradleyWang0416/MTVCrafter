@@ -6,18 +6,24 @@ mode=test
 vision_guidance_where=enc
 vision_guidance_fuse=ada_sample
 
-EXP_NAME="joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl"
-CONFIG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/config.yaml"
-LOG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/train.log"
+EXP_NAME="joint_and_image/joint3d_image_affined_448x448/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl"
+
+
+# CONFIG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_448x448/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/config.yaml"
+CONFIG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_448x448/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/config_3dpw.yaml"
+
+
+
+LOG="vqvae_experiment_configs/joint_and_image/joint3d_image_affined_448x448/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/train.log"
 
 if [ "$mode" = "test" ]; then
-    RESUME_PATH="vqvae_experiment/joint_and_image/joint3d_image_affined_192x256/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/models/checkpoint_epoch_316_step_360000"
+    RESUME_PATH="vqvae_experiment/joint_and_image/joint3d_image_affined_448x448/f16s1d16_cb8192x2048_mpjpe_Tdown1-2/hrFix_lvl0123_adaSmpl/models/checkpoint_epoch_165_step_500000"
     LOSS_TYPE=mpjpe_millimeter     # l1, mpjpe, mpjpe_millimeter
-    BATCH_SIZE=32
+    BATCH_SIZE=16
 else
     RESUME_PATH=""
     LOSS_TYPE=mpjpe     # l1, mpjpe
-    BATCH_SIZE=48
+    BATCH_SIZE=16
 fi
 
 
@@ -44,7 +50,7 @@ else
 fi
 
 if [ "$mode" = "debug" ]; then
-    CUDA_VISIBLE_DEVICES=6 \
+    CUDA_VISIBLE_DEVICES=3 \
         python \
         -m debugpy --listen 5678 --wait-for-client \
         train_vqvae_new.py \
@@ -71,7 +77,7 @@ if [ "$mode" = "debug" ]; then
 elif [ "$mode" = "test" ]; then
         # accelerate launch --num_processes 5 \
         # -m debugpy --listen 5678 --wait-for-client \
-    CUDA_VISIBLE_DEVICES=3 \
+    CUDA_VISIBLE_DEVICES=1 \
         python \
         test_vqvae_new.py \
         --config ${CONFIG} \
@@ -93,9 +99,9 @@ elif [ "$mode" = "test" ]; then
         --vision_guidance_fuse ${vision_guidance_fuse}
 else
         # python -u train_vqvae_new.py \
-    CUDA_VISIBLE_DEVICES=6,7 \
+    CUDA_VISIBLE_DEVICES=4,5 \
         nohup \
-        accelerate launch --num_processes 2 --main_process_port 29233 \
+        accelerate launch --num_processes 2 --main_process_port 29240 \
         train_vqvae_new.py \
         --batch_size ${BATCH_SIZE} \
         --config ${CONFIG} \
